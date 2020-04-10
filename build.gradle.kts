@@ -25,9 +25,10 @@ repositories {
 extra["springCloudVersion"] = "Hoxton.SR3"
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    	implementation("org.springframework.boot:spring-boot-starter-webflux")
+    	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     	implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql")
+    	implementation("org.hibernate:hibernate-spatial")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")

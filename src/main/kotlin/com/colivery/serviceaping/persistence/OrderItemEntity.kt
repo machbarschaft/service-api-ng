@@ -1,12 +1,24 @@
 package com.colivery.serviceaping.persistence
 
-import javax.persistence.Entity
-import javax.persistence.Id
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import java.time.LocalDateTime
+import java.util.*
+import javax.persistence.*
 
 @Entity
+@Table(name = "order_item")
 data class OrderItemEntity(
         @Id
-        var id: String,
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        var id: UUID? = null,
 
-        var description: String
+        @Column(nullable = false)
+        var description: String,
+
+        @CreatedDate
+        var createdAt: LocalDateTime,
+
+        @LastModifiedDate
+        var updatedAt: LocalDateTime
 )

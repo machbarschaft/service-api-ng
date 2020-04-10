@@ -5,4 +5,4 @@ import java.util.*
 import javax.transaction.Transactional
 
 @Transactional(Transactional.TxType.MANDATORY)
-interface OrderRepository : JpaRepository<OrderEntity, UUID>
+interface UserRepository : JpaRepository<UserEntity, UUID>

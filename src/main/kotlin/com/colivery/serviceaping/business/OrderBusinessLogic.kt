@@ -1,7 +1,7 @@
 package com.colivery.serviceaping.business
 
-import com.colivery.serviceaping.persistence.OrderEntity
 import com.colivery.serviceaping.dto.OrderDto
+import com.colivery.serviceaping.persistence.OrderEntity
 
 fun transformToDto(orderEntity: OrderEntity) =
-        OrderDto(orderEntity.id, orderEntity.userId, orderEntity.driverUserId)
+        OrderDto(orderEntity.id.toString(), orderEntity.user.id.toString(), orderEntity.driverUser?.id.toString())
