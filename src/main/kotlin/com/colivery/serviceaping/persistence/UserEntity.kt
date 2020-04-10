@@ -12,7 +12,7 @@ import javax.persistence.*
 data class UserEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        var id: UUID? = null,
+        var id: UUID,
 
         @Column(nullable = false)
         var firstName: String,

@@ -11,7 +11,7 @@ import javax.persistence.*
 data class OrderItemEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        var id: UUID? = null,
+        var id: UUID,
 
         @Column(nullable = false)
         var description: String,
