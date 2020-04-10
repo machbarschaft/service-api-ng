@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create_base_structure" author="nschoellhorn">
+        <sql dbms="postgresql">
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+            CREATE TYPE delivery_status AS ENUM ('TO_BE_DELIVERED', 'DELIVERED', 'CONSUMER_CANCELLED', 'ACCEPTED');
+        </sql>
+
+        <createTable tableName="user">
+            <column name="id" type="UUID" defaultValueComputed="${uuid_function}">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street_no" type="varchar(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="zip_code" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="location" type="geometry(Point, 4326)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_geo_hash" type="char(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="varchar(25)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="order">
+            <column name="id" type="uuid" defaultValueComputed="${uuid_function}">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false" referencedTableName="user" referencedColumnNames="id"
+                             foreignKeyName="uid_user_fk"/>
+            </column>
+            <column name="driver_user_id" type="uuid">
+                <constraints nullable="true" referencedTableName="user" referencedColumnNames="id"
+                             foreignKeyName="driver_user_fk"/>
+            </column>
+            <column name="hint" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="max_price" type="integer">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="delivery_status"
+                    defaultValue="TO_BE_DELIVERED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="order_item">
+            <column name="id" type="uuid" defaultValueComputed="${uuid_function}">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="order_id" type="uuid">
+                <constraints nullable="false" referencedColumnNames="id" referencedTableName="order"
+                             foreignKeyName="item_order_fk"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

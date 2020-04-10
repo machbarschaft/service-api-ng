@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+  database:
+    container_name: colivery_database
+    image: postgis/postgis:11-3.0
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: colivery
+      POSTGRES_USER: colivery
+      POSTGRES_DB: colivery
