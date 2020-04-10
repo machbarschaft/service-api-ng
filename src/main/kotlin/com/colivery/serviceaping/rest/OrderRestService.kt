@@ -1,7 +1,7 @@
 package com.colivery.serviceaping.rest
 
 import com.colivery.serviceaping.business.transformToDto
-import com.colivery.serviceaping.repository.api.OrderRepository
+import com.colivery.serviceaping.persistence.OrderRepository
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
