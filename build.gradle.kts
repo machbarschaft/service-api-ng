@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     kotlin("jvm") version "1.3.71"
     kotlin("plugin.spring") version "1.3.71"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.71"
 }
 
 group = "com.colivery"
@@ -25,20 +26,20 @@ repositories {
 extra["springCloudVersion"] = "Hoxton.SR3"
 
 dependencies {
-    	implementation("org.springframework.boot:spring-boot-starter-webflux")
-    	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    	implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql")
-    	implementation("org.hibernate:hibernate-spatial")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-	implementation("com.google.firebase:firebase-admin:6.12.2")
-	implementation("org.liquibase:liquibase-core:3.6.3")
-	runtimeOnly("org.postgresql:postgresql:42.2.12")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-    	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql")
+    implementation("org.hibernate:hibernate-spatial")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("com.google.firebase:firebase-admin:6.12.2")
+    implementation("org.liquibase:liquibase-core:3.6.3")
+    runtimeOnly("org.postgresql:postgresql:42.2.12")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("io.projectreactor:reactor-test")
