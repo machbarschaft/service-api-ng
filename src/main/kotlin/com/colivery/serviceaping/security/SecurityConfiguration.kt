@@ -18,9 +18,6 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 @EnableWebFluxSecurity
 class SecurityConfiguration {
 
-    @Autowired
-    private lateinit var firebaseUserDetailsService: FirebaseUserDetailsService
-
     @Bean
     fun filterChain(http: ServerHttpSecurity, authenticationWebFilter: AuthenticationWebFilter):
             SecurityWebFilterChain =
@@ -51,7 +48,8 @@ class SecurityConfiguration {
     }
 
     @Bean
-    fun reactiveAuthenticationManager(): ReactiveAuthenticationManager? {
+    @Autowired
+    fun reactiveAuthenticationManager(firebaseUserDetailsService: FirebaseUserDetailsService): ReactiveAuthenticationManager? {
         return UserDetailsRepositoryReactiveAuthenticationManager(firebaseUserDetailsService)
     }
 
