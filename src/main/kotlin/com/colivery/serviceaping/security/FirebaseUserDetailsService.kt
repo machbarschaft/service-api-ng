@@ -1,11 +1,17 @@
 package com.colivery.serviceaping.security
 
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
+@Service
 class FirebaseUserDetailsService : ReactiveUserDetailsService {
     override fun findByUsername(username: String?): Mono<UserDetails> {
-        TODO("Not yet implemented")
+        return when {
+            username != null -> Mono.just(User.withUsername(username).build())
+            else -> Mono.empty()
+        }
     }
 }

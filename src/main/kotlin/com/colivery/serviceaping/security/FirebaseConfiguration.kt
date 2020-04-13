@@ -18,21 +18,10 @@ class FirebaseConfiguration {
     @Value("\${firebase.project.id}")
     private val projectId: String? = null
 
-    @Value("\${google.keyLocation}")
-    private val keyLocation: String? = null
-
-    private fun credentials(): GoogleCredentials {
-        return if (keyLocation == null || keyLocation == "") {
-            GoogleCredentials.getApplicationDefault()
-        } else {
-            GoogleCredentials.fromStream(FileInputStream(keyLocation))
-        }
-    }
-
     @PostConstruct
     fun init() {
         val options: FirebaseOptions = FirebaseOptions.Builder()
-                .setCredentials(credentials())
+                .setCredentials(GoogleCredentials.getApplicationDefault())
                 .setDatabaseUrl(databaseUrl)
                 .setProjectId(projectId)
                 .build()
