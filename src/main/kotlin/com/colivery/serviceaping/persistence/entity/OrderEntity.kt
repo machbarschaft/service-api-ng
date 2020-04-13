@@ -12,7 +12,7 @@ import javax.persistence.*
 @Table(name = "`order`")
 @EntityListeners(AuditingEntityListener::class)
 data class OrderEntity(
-        @ManyToOne(optional = false)
+        @ManyToOne(optional = false, fetch = FetchType.EAGER)
         val user: UserEntity,
 
         @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, targetEntity =
@@ -20,7 +20,7 @@ data class OrderEntity(
         @JoinColumn(name = "order_id")
         val items: List<OrderItemEntity>? = null,
 
-        @ManyToOne
+        @ManyToOne(optional = true, fetch = FetchType.EAGER)
         val driverUser: UserEntity? = null,
 
         val hint: String? = null,

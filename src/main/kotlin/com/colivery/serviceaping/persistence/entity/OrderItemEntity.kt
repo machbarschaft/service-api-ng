@@ -1,29 +1,30 @@
 package com.colivery.serviceaping.persistence.entity
 
-import com.colivery.serviceaping.persistence.entity.OrderEntity
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
 @Entity
 @Table(name = "order_item")
+@EntityListeners(AuditingEntityListener::class)
 data class OrderItemEntity(
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        var id: UUID,
-
         @JoinColumn(name = "order_id")
         @ManyToOne(targetEntity = OrderEntity::class)
-        var order: OrderEntity,
+        val order: OrderEntity,
 
         @Column(nullable = false)
-        var description: String,
+        val description: String
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var id: UUID? = null
 
-        @CreatedDate
-        var createdAt: LocalDateTime,
+    @CreatedDate
+    lateinit var createdAt: LocalDateTime
 
-        @LastModifiedDate
-        var updatedAt: LocalDateTime
-)
+    @LastModifiedDate
+    lateinit var updatedAt: LocalDateTime
+}

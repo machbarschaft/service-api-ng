@@ -1,11 +1,12 @@
 package com.colivery.serviceaping.persistence.repository
 
 import com.colivery.serviceaping.persistence.entity.UserEntity
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 import java.util.*
 
-interface UserRepository : JpaRepository<UserEntity, UUID> {
+interface UserRepository : CrudRepository<UserEntity, UUID> {
 
     fun findByFirebaseUid(firebaseUid: String): UserEntity?
 
 }
+

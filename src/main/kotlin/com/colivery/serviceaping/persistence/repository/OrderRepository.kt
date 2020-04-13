@@ -1,9 +1,15 @@
 package com.colivery.serviceaping.persistence.repository
 
 import com.colivery.serviceaping.persistence.entity.OrderEntity
-import org.springframework.data.jpa.repository.JpaRepository
+import com.colivery.serviceaping.persistence.entity.UserEntity
+import org.springframework.data.repository.CrudRepository
 import java.util.*
 import javax.transaction.Transactional
 
 @Transactional(Transactional.TxType.MANDATORY)
-interface OrderRepository : JpaRepository<OrderEntity, UUID>
+interface OrderRepository : CrudRepository<OrderEntity, UUID> {
+
+    fun findAllByUser(user: UserEntity): Set<OrderEntity>
+    fun findAllByDriverUser(user: UserEntity): Set<OrderEntity>
+
+}
