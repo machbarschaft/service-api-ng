@@ -10,7 +10,8 @@ import reactor.core.publisher.Mono
 class FirebaseUserDetailsService : ReactiveUserDetailsService {
     override fun findByUsername(username: String?): Mono<UserDetails> {
         return when {
-            username != null -> Mono.just(User.withUsername(username).build())
+            username != null -> Mono.just(
+                    User.withDefaultPasswordEncoder().username(username).password(username).roles("USER").build())
             else -> Mono.empty()
         }
     }
