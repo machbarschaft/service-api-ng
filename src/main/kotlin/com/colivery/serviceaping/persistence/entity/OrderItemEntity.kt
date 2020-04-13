@@ -1,5 +1,6 @@
-package com.colivery.serviceaping.persistence
+package com.colivery.serviceaping.persistence.entity
 
+import com.colivery.serviceaping.persistence.entity.OrderEntity
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
@@ -12,6 +13,10 @@ data class OrderItemEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         var id: UUID,
+
+        @JoinColumn(name = "order_id")
+        @ManyToOne(targetEntity = OrderEntity::class)
+        var order: OrderEntity,
 
         @Column(nullable = false)
         var description: String,
