@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UserDetailsRepositoryReactive
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
@@ -48,9 +50,17 @@ class SecurityConfiguration {
     }
 
     @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    }
+
+    @Bean
     @Autowired
-    fun reactiveAuthenticationManager(firebaseUserDetailsService: FirebaseUserDetailsService): ReactiveAuthenticationManager? {
-        return UserDetailsRepositoryReactiveAuthenticationManager(firebaseUserDetailsService)
+    fun reactiveAuthenticationManager(firebaseUserDetailsService: FirebaseUserDetailsService,
+                                      passwordEncoder: PasswordEncoder): ReactiveAuthenticationManager? {
+        val authenticationManager = UserDetailsRepositoryReactiveAuthenticationManager(firebaseUserDetailsService)
+        authenticationManager.setPasswordEncoder(passwordEncoder)
+        return authenticationManager
     }
 
 
