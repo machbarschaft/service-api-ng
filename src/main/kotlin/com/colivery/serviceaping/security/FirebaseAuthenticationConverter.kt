@@ -18,9 +18,7 @@ class FirebaseAuthenticationConverter : ServerAuthenticationConverter {
 
         val token: String? = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)?.let { getToken(it) }
 
-        val fireBaseToken = token?.let { getFirebaseUser(it) } ?: Mono.empty()
-
-        return fireBaseToken.map { UsernamePasswordAuthenticationToken(it.uid, token) }
+        return getFirebaseUser(token).map { UsernamePasswordAuthenticationToken(it.uid, token) }
 
     }
 
@@ -31,10 +29,12 @@ class FirebaseAuthenticationConverter : ServerAuthenticationConverter {
         }
     }
 
-    private fun getFirebaseUser(token: String): Mono<FirebaseToken> {
-        return Mono.fromCallable(Callable {
-            FirebaseAuth.getInstance().verifyIdToken(token)
-        }).publishOn(Schedulers.elastic())
+    private fun getFirebaseUser(token: String?): Mono<FirebaseToken> {
+        return token?.let {
+            Mono.fromCallable(Callable {
+                FirebaseAuth.getInstance().verifyIdToken(token)
+            }).publishOn(Schedulers.elastic())
+        } ?: Mono.empty()
 
     }
 
