@@ -16,7 +16,7 @@ class FirebaseAuthenticationConverter : ServerAuthenticationConverter {
 
         return when (val firebaseUser = token?.let { getFirebaseUser(it) }) {
             null -> Mono.empty()
-            else -> Mono.just(UsernamePasswordAuthenticationToken(firebaseUser.name, token))
+            else -> Mono.just(UsernamePasswordAuthenticationToken(firebaseUser.uid, token))
         }
     }
 
