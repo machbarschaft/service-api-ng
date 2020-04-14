@@ -22,7 +22,7 @@ class FirebaseAuthenticationConverter : ServerAuthenticationConverter {
 
     private fun getToken(authHeader: String?) = authHeader?.let {
         when {
-            it.startsWith("Bearer ") -> it.drop(7)
+            it.startsWith("Bearer ") -> it.drop(    7)
             else -> null
         }
     }
