@@ -45,9 +45,6 @@
             <column name="phone" type="varchar(25)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="firebaseUid" type="varchar(128)">
-                <constraints nullable="false" unique="true"/>
-            </column>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
             </column>

@@ -9,5 +9,6 @@
     <property name="uuid_function" value="uuid_generate_v4()" dbms="postgresql"/>
 
     <includeAll path="1.0.0" relativeToChangelogFile="true"/>
+    <includeAll path="1.0.1" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
