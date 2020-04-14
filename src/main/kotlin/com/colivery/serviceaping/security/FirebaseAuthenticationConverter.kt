@@ -12,20 +12,23 @@ class FirebaseAuthenticationConverter : ServerAuthenticationConverter {
 
     override fun convert(exchange: ServerWebExchange): Mono<Authentication> {
 
-        val authHeader: String? = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)
+        val token: String? = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)?.let { getToken(it) }
 
-        return when (
-            val firebaseUser = getFirebaseUser(authHeader)) {
+        return when (val firebaseUser = token?.let { getFirebaseUser(it) }) {
             null -> Mono.empty()
-            else -> Mono.just(UsernamePasswordAuthenticationToken(firebaseUser.name, authHeader?.drop(7)))
+            else -> Mono.just(UsernamePasswordAuthenticationToken(firebaseUser.name, token))
         }
     }
 
-    private fun isValidHeader(authHeader: String?) = authHeader != null && authHeader.startsWith(prefix = "Bearer ")
+    private fun getToken(authHeader: String?) = authHeader?.let {
+        when {
+            it.startsWith("Bearer ") -> it.drop(7)
+            else -> null
+        }
+    }
 
-    private fun getFirebaseUser(authHeader: String?) = when {
-        isValidHeader(authHeader) -> FirebaseAuth.getInstance().verifyIdToken(authHeader?.drop(7))
-        else -> null
+    private fun getFirebaseUser(token: String?) = token?.let {
+        FirebaseAuth.getInstance().verifyIdToken(it)
     }
 
 }
