@@ -16,12 +16,12 @@ import com.colivery.serviceaping.util.extractBearerToken
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import org.locationtech.jts.geom.GeometryFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.context.request.ServletWebRequest
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import javax.transaction.Transactional
@@ -73,13 +73,13 @@ class UserRestService(
     }
 */
     @PostMapping
-    fun createUser(@RequestBody createUserDto: CreateUserDto, request: ServletWebRequest):
+    fun createUser(@RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
             ResponseEntity<Mono<UserResource>> {
         val unauthorized = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .build<Mono<UserResource>>()
 
         // Get the bearer token
-        val token = extractBearerToken(request)
+        val token = extractBearerToken(headers)
                 ?: return unauthorized
 
         try {

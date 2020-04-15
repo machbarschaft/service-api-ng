@@ -27,7 +27,9 @@ class SecurityConfiguration {
                     .pathMatchers(HttpMethod.POST, "/v1/user").permitAll()
                     // By default, we want everything to be authenticated (via Firebase)
                     .anyExchange().authenticated()
-                    .and().build()
+                    .and().csrf().disable()
+                    .cors().disable()
+                    .build()
 
     @Bean
     @Autowired
