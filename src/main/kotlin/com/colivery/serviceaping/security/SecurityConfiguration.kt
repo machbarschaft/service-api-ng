@@ -3,15 +3,13 @@ package com.colivery.serviceaping.security
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import org.springframework.security.authentication.ReactiveAuthenticationManager
-import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
+import org.springframework.security.web.server.authentication.ReactivePreAuthenticatedAuthenticationManager
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
 
 @Configuration
@@ -36,25 +34,9 @@ class SecurityConfiguration {
             }
 
     @Bean
-    @Profile("!development")
-    fun fireBaseAuthenticationConverter(): FirebaseAuthenticationConverter {
-        return FirebaseAuthenticationConverter()
-    }
-
-    @Bean
-    @Profile("development")
-    fun dummyAuthenticationConverter(): DummyAuthenticationConverter {
-        return DummyAuthenticationConverter()
-    }
-
-    @Bean
     @Autowired
-    fun reactiveAuthenticationManager(firebaseUserDetailsService: FirebaseUserDetailsService,
-                                      passwordEncoder: PasswordEncoder): ReactiveAuthenticationManager? {
-        val authenticationManager = UserDetailsRepositoryReactiveAuthenticationManager(firebaseUserDetailsService)
-        authenticationManager.setPasswordEncoder(passwordEncoder)
-        return authenticationManager
-    }
+    fun reactiveAuthenticationManager(firebaseUserDetailsService: FirebaseUserDetailsService) =
+            ReactivePreAuthenticatedAuthenticationManager(firebaseUserDetailsService)
 
 
 }
