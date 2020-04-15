@@ -65,8 +65,11 @@ class UserRestService(
     }
 
     @DeleteMapping
-    fun deleteOwnUser() {
-
+    fun deleteOwnUser(authentication: Authentication) {
+        val user = authentication.getUser()
+        this.orderRepository.updateCreatedOrdersToConsumerCancelled(user)
+        this.firebaseAuth.deleteUser(user.firebaseUid)
+        this.userRepository.delete(user)
     }
 
     @PostMapping
