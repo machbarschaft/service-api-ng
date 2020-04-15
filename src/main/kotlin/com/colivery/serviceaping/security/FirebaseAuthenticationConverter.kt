@@ -18,6 +18,7 @@ import javax.transaction.Transactional
 @Profile("!development")
 @Component
 class FirebaseAuthenticationConverter(
+        private val firebaseAuth: FirebaseAuth,
         private val userRepository: UserRepository
 ) : ServerAuthenticationConverter {
 
@@ -46,7 +47,7 @@ class FirebaseAuthenticationConverter(
 
     private fun getFirebaseUser(token: String): Mono<FirebaseToken> {
         return try {
-            Mono.justOrEmpty(FirebaseAuth.getInstance().verifyIdToken(token))
+            Mono.justOrEmpty(this.firebaseAuth.verifyIdToken(token))
         } catch (exception: FirebaseAuthException) {
             Mono.empty()
         }

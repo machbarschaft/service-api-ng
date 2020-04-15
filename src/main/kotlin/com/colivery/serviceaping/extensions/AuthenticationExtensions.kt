@@ -1,7 +1,7 @@
 package com.colivery.serviceaping.extensions
 
+import com.colivery.serviceaping.persistence.entity.UserEntity
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.UserDetails
 
-fun Authentication.getUserDetails() =
-        this.principal as UserDetails
+fun Authentication.getUser() =
+        this.credentials as UserEntity

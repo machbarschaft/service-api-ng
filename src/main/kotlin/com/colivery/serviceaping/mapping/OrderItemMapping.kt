@@ -2,7 +2,7 @@ package com.colivery.serviceaping.mapping
 
 import com.colivery.serviceaping.persistence.entity.OrderEntity
 import com.colivery.serviceaping.persistence.entity.OrderItemEntity
-import com.colivery.serviceaping.rest.v1.dto.CreateOrderItemDto
+import com.colivery.serviceaping.rest.v1.dto.order.CreateOrderItemDto
 import com.colivery.serviceaping.rest.v1.resources.OrderItemResource
 
 fun toItemSet(items: List<OrderItemEntity>?) =

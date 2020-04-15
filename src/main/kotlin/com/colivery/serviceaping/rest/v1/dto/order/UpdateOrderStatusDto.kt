@@ -1,4 +1,4 @@
-package com.colivery.serviceaping.rest.v1.dto
+package com.colivery.serviceaping.rest.v1.dto.order
 
 import com.colivery.serviceaping.persistence.OrderStatus
 import org.springframework.validation.annotation.Validated

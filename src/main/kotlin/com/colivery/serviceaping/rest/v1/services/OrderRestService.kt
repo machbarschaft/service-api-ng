@@ -1,17 +1,18 @@
 package com.colivery.serviceaping.rest.v1.v1
 
+import com.colivery.serviceaping.extensions.getUser
 import com.colivery.serviceaping.mapping.toOrderEntity
 import com.colivery.serviceaping.mapping.toOrderItemEntity
 import com.colivery.serviceaping.mapping.toOrderResource
 import com.colivery.serviceaping.persistence.repository.OrderItemRepository
 import com.colivery.serviceaping.persistence.repository.OrderRepository
-import com.colivery.serviceaping.persistence.repository.UserRepository
-import com.colivery.serviceaping.rest.v1.dto.CreateOrderDto
-import com.colivery.serviceaping.rest.v1.dto.UpdateOrderStatusDto
+import com.colivery.serviceaping.rest.v1.dto.order.CreateOrderDto
+import com.colivery.serviceaping.rest.v1.dto.order.UpdateOrderStatusDto
 import com.colivery.serviceaping.rest.v1.resources.OrderResource
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import java.util.*
@@ -20,7 +21,6 @@ import java.util.*
 @RequestMapping("/v1/order", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OrderRestService(
         private val orderRepository: OrderRepository,
-        private val userRepository: UserRepository,
         private val orderItemRepository: OrderItemRepository
 ) {
 
@@ -38,8 +38,8 @@ class OrderRestService(
     }
 
     @PostMapping
-    fun createOrder(@RequestBody order: CreateOrderDto): Mono<OrderResource> {
-        val user = this.userRepository.findFirst()
+    fun createOrder(@RequestBody order: CreateOrderDto, authentication: Authentication): Mono<OrderResource> {
+        val user = authentication.getUser()
 
         val orderEntity = this.orderRepository.save(toOrderEntity(order, user))
         this.orderItemRepository.saveAll(order.items.map {

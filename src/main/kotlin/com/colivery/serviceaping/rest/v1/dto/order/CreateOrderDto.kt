@@ -1,4 +1,4 @@
-package com.colivery.serviceaping.rest.v1.dto
+package com.colivery.serviceaping.rest.v1.dto.order
 
 import org.springframework.validation.annotation.Validated
 import javax.annotation.Nullable

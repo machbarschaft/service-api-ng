@@ -3,7 +3,7 @@ package com.colivery.serviceaping.mapping
 import com.colivery.serviceaping.persistence.OrderStatus
 import com.colivery.serviceaping.persistence.entity.OrderEntity
 import com.colivery.serviceaping.persistence.entity.UserEntity
-import com.colivery.serviceaping.rest.v1.dto.CreateOrderDto
+import com.colivery.serviceaping.rest.v1.dto.order.CreateOrderDto
 import com.colivery.serviceaping.rest.v1.resources.OrderResource
 
 fun toOrderResource(order: OrderEntity) =
