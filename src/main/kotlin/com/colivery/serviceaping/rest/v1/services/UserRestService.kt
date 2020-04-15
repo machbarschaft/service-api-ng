@@ -64,14 +64,14 @@ class UserRestService(
         )
     }
 
-    @DeleteMapping
+    /*@DeleteMapping
     fun deleteOwnUser(authentication: Authentication) {
         val user = authentication.getUser()
         this.orderRepository.updateCreatedOrdersToConsumerCancelled(user)
         this.firebaseAuth.deleteUser(user.firebaseUid)
         this.userRepository.delete(user)
     }
-
+*/
     @PostMapping
     fun createUser(@RequestBody createUserDto: CreateUserDto, request: ServletWebRequest):
             ResponseEntity<Mono<UserResource>> {

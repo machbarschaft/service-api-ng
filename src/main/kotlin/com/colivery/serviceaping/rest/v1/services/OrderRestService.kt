@@ -49,4 +49,10 @@ class OrderRestService(
         return Mono.just(toOrderResource(orderEntity))
     }
 
+    /*@GetMapping
+    fun searchOrdersInRange(@RequestParam latitude: Double, @RequestParam longitude: Double,
+                            @RequestParam range: Int): Flux<UserOrderAcceptedResponse> {
+
+    }*/
+
 }
