@@ -1,5 +1,6 @@
 package com.colivery.serviceaping.rest.v1.services
 
+import com.colivery.serviceaping.business.spatial.calculateGeoHash
 import com.colivery.serviceaping.dto.UserOrderAcceptedResponse
 import com.colivery.serviceaping.dto.UserOrderResponse
 import com.colivery.serviceaping.extensions.getUser
@@ -96,7 +97,7 @@ class UserRestService(
                     email = createUserDto.email,
                     firebaseUid = firebaseToken.uid,
                     location = createUserDto.location.toGeoPoint(this.geometryFactory),
-                    locationGeoHash = createUserDto.locationGeoHash,
+                    locationGeoHash = calculateGeoHash(createUserDto.location),
                     phone = createUserDto.phone
             ))
 

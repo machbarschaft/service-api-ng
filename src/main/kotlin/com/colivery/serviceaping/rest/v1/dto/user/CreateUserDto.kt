@@ -26,7 +26,5 @@ data class CreateUserDto(
         @NotNull
         val location: GeoPointResource,
         @NotEmpty
-        val locationGeoHash: String,
-        @NotEmpty
         val phone: String
 )
