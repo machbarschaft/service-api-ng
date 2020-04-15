@@ -40,7 +40,10 @@ data class UserEntity(
         val locationGeoHash: String,
 
         @Column(nullable = false)
-        val phone: String
+        val phone: String,
+
+        @Column(nullable = false)
+        val firebaseUid: String
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
