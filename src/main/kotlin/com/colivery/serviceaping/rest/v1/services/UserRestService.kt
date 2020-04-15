@@ -107,8 +107,7 @@ class UserRestService(
     }
 
     @GetMapping
-    fun getUser() {
-
-    }
+    fun getUser(authentication: Authentication) =
+            Mono.just(toUserResource(authentication.getUser()))
 
 }
