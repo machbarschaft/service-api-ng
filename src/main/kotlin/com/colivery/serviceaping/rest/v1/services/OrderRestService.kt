@@ -1,4 +1,4 @@
-package com.colivery.serviceaping.rest.v1.v1
+package com.colivery.serviceaping.rest.v1.services
 
 import com.colivery.serviceaping.extensions.getUser
 import com.colivery.serviceaping.mapping.toOrderEntity
