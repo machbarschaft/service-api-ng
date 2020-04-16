@@ -13,34 +13,34 @@ import javax.persistence.*
 @EntityListeners(AuditingEntityListener::class)
 data class UserEntity(
         @Column(nullable = false)
-        val firstName: String,
+        var firstName: String,
 
         @Column(nullable = false)
-        val lastName: String,
+        var lastName: String,
 
         @Column(nullable = false)
-        val street: String,
+        var street: String,
 
         @Column(nullable = false)
-        val streetNo: String,
+        var streetNo: String,
 
         @Column(nullable = false)
-        val zipCode: String,
+        var zipCode: String,
 
         @Column(nullable = false)
-        val city: String,
+        var city: String,
 
         @Column(nullable = false)
-        val email: String,
+        var email: String,
 
         @Column(nullable = false)
-        val location: Point,
+        var location: Point,
 
         @Column(nullable = false)
-        val locationGeoHash: String,
+        var locationGeoHash: String,
 
         @Column(nullable = false)
-        val phone: String,
+        var phone: String,
 
         @Column(nullable = false)
         val firebaseUid: String

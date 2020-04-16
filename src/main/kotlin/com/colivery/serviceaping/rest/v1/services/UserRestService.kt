@@ -11,6 +11,7 @@ import com.colivery.serviceaping.persistence.entity.UserEntity
 import com.colivery.serviceaping.persistence.repository.OrderRepository
 import com.colivery.serviceaping.persistence.repository.UserRepository
 import com.colivery.serviceaping.rest.v1.dto.user.CreateUserDto
+import com.colivery.serviceaping.rest.v1.dto.user.UpdateUserDto
 import com.colivery.serviceaping.rest.v1.resources.UserResource
 import com.colivery.serviceaping.util.extractBearerToken
 import com.google.firebase.auth.FirebaseAuth
@@ -48,6 +49,25 @@ class UserRestService(
                     )
                 }
         )
+    }
+
+    @PutMapping
+    fun updateOwnUser(@RequestBody updateUserDto: UpdateUserDto, authentication: Authentication):
+            Mono<UserResource> {
+        return Mono.fromCallable {
+            val user = authentication.getUser()
+            user.firstName = updateUserDto.firstName
+            user.lastName = updateUserDto.lastName
+            user.street = updateUserDto.street
+            user.streetNo = updateUserDto.streetNo
+            user.zipCode = updateUserDto.zipCode
+            user.city = updateUserDto.city
+            user.phone = updateUserDto.phone
+            user.locationGeoHash = calculateGeoHash(updateUserDto.location)
+            user.location = updateUserDto.location.toGeoPoint(this.geometryFactory)
+
+            this.userRepository.save(user)
+        }.map(::toUserResource)
     }
 
     @GetMapping("/orders-accepted")

@@ -33,7 +33,9 @@ class OrderRestService(
                     .build()
         }
 
-        this.orderRepository.save(order.copy(status = request.status))
+        order.status = request.status
+
+        this.orderRepository.save(order)
         return ResponseEntity.ok(Mono.empty())
     }
 

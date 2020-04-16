@@ -13,23 +13,23 @@ import javax.persistence.*
 @EntityListeners(AuditingEntityListener::class)
 data class OrderEntity(
         @ManyToOne(optional = false, fetch = FetchType.EAGER)
-        val user: UserEntity,
+        var user: UserEntity,
 
         @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, targetEntity =
         OrderItemEntity::class)
         @JoinColumn(name = "order_id")
-        val items: List<OrderItemEntity>? = null,
+        var items: List<OrderItemEntity>? = null,
 
         @ManyToOne(optional = true, fetch = FetchType.EAGER)
-        val driverUser: UserEntity? = null,
+        var driverUser: UserEntity? = null,
 
-        val hint: String? = null,
+        var hint: String? = null,
 
-        val maxPrice: Int? = null,
+        var maxPrice: Int? = null,
 
         @Column(nullable = false)
         @Enumerated(EnumType.STRING)
-        val status: OrderStatus
+        var status: OrderStatus
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
