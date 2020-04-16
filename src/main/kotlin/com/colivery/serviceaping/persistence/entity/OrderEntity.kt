@@ -30,6 +30,7 @@ data class OrderEntity(
 
         @Column(nullable = false)
         @Type(type = "com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType")
+        @Enumerated(EnumType.STRING)
         var status: OrderStatus
 ) {
     @Id
