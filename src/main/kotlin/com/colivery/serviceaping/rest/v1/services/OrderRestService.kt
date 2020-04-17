@@ -66,11 +66,11 @@ class OrderRestService(
         //simply defining how many points the circle will have..
         shapeFactory.setNumPoints(32)
         shapeFactory.setCentre(Coordinate(longitude, latitude))
-        //size is the diameter of the circle (in "coordinate degrees")..
         val rangeInDegrees = Distance.coordinatesWhenTravelingInDirectionForDistance(
                 com.colivery.serviceaping.business.spatial.Coordinate(latitude, longitude),
-                (range.toFloat() / 1000.0).toFloat(),
-                0f).latitude - latitude
+                (range.toFloat() / 1000.0).toFloat(), //range needs to be in Km
+                0f).latitude - latitude //delta in latitude after walking range degrees at an angle of 0°
+        //size is the diameter of the circle (in "coordinate degrees")..
         shapeFactory.setSize(2.0 * rangeInDegrees)
 
         return Flux.fromIterable(this.orderRepository.searchOrdersInRange(shapeFactory.createCircle())
