@@ -1,5 +1,6 @@
 package com.colivery.serviceaping.rest.v1.services
 
+import com.colivery.serviceaping.business.spatial.Distance
 import com.colivery.serviceaping.dto.UserOrderAcceptedResponse
 import com.colivery.serviceaping.extensions.getUser
 import com.colivery.serviceaping.mapping.toOrderEntity
@@ -66,7 +67,11 @@ class OrderRestService(
         shapeFactory.setNumPoints(32)
         shapeFactory.setCentre(Coordinate(longitude, latitude))
         //size is the diameter of the circle (in "coordinate degrees")..
-        shapeFactory.setSize(2.0 * range.toDouble() / 111111.0)
+        val rangeInDegrees = Distance.coordinatesWhenTravelingInDirectionForDistance(
+                com.colivery.serviceaping.business.spatial.Coordinate(latitude, longitude),
+                (range.toFloat() / 1000.0).toFloat(),
+                0f).latitude - latitude
+        shapeFactory.setSize(2.0 * rangeInDegrees)
 
         return Flux.fromIterable(this.orderRepository.searchOrdersInRange(shapeFactory.createCircle())
                 .map { order ->
