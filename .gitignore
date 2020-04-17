@@ -32,5 +32,6 @@ out/
 .vscode/
 
 application-dev.properties
+application-development.properties
 
 util/
