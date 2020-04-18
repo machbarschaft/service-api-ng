@@ -20,6 +20,7 @@ interface OrderRepository : JpaRepository<OrderEntity, UUID> {
     @Modifying
     fun updateCreatedOrdersToConsumerCancelled(user: UserEntity): Int
 
-    @Query("select o from OrderEntity o where within(o.user.location, :circle) = true")
-    fun searchOrdersInRange(circle: Polygon): Set<OrderEntity>
+    @Query("select o from OrderEntity o where within(o.user.location, :circle) = true and o" +
+            ".status = 'TO_BE_DELIVERED'")
+    fun searchOpenOrdersInRange(circle: Polygon): Set<OrderEntity>
 }

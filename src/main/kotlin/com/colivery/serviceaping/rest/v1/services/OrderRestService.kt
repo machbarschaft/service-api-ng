@@ -133,7 +133,7 @@ class OrderRestService(
         //size is the diameter of the circle (in "coordinate degrees")..
         shapeFactory.setSize(2.0 * rangeInDegrees)
 
-        return Flux.fromIterable(this.orderRepository.searchOrdersInRange(shapeFactory.createCircle())
+        return Flux.fromIterable(this.orderRepository.searchOpenOrdersInRange(shapeFactory.createCircle())
                 .map { order ->
                     UserOrderAcceptedResponse(
                             toOrderResource(order),
