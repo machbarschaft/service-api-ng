@@ -76,7 +76,8 @@ class OrderRestService(
         val order = this.orderRepository.findByIdOrNull(orderId)
                 ?: return ResponseEntity.notFound().build()
 
-        if (order.status != OrderStatus.ACCEPTED || user != order.user) {
+        if ((order.status != OrderStatus.ACCEPTED && order.status != OrderStatus.TO_BE_DELIVERED)
+                || user != order.user) {
             return ResponseEntity.badRequest().build()
         }
 
