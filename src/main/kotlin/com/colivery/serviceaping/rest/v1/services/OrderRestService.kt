@@ -1,17 +1,17 @@
 package com.colivery.serviceaping.rest.v1.services
 
 import com.colivery.serviceaping.business.spatial.Distance
-import com.colivery.serviceaping.dto.UserOrderAcceptedResponse
 import com.colivery.serviceaping.extensions.getUser
+import com.colivery.serviceaping.mapping.toAnonymizedUserResource
 import com.colivery.serviceaping.mapping.toOrderEntity
 import com.colivery.serviceaping.mapping.toOrderItemEntity
 import com.colivery.serviceaping.mapping.toOrderResource
-import com.colivery.serviceaping.mapping.toUserResource
 import com.colivery.serviceaping.persistence.repository.OrderItemRepository
 import com.colivery.serviceaping.persistence.repository.OrderRepository
 import com.colivery.serviceaping.rest.v1.dto.order.CreateOrderDto
 import com.colivery.serviceaping.rest.v1.dto.order.UpdateOrderStatusDto
 import com.colivery.serviceaping.rest.v1.resources.OrderResource
+import com.colivery.serviceaping.rest.v1.responses.UserOrderSearchResponse
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.util.GeometricShapeFactory
@@ -61,7 +61,7 @@ class OrderRestService(
 
     @GetMapping
     fun searchOrdersInRange(@RequestParam latitude: Double, @RequestParam longitude: Double,
-                            @RequestParam range: Int): Flux<UserOrderAcceptedResponse> {
+                            @RequestParam range: Int): Flux<UserOrderSearchResponse> {
         var shapeFactory = GeometricShapeFactory(geometryFactory)
         //simply defining how many points the circle will have..
         shapeFactory.setNumPoints(32)
@@ -75,9 +75,9 @@ class OrderRestService(
 
         return Flux.fromIterable(this.orderRepository.searchOrdersInRange(shapeFactory.createCircle())
                 .map { order ->
-                    UserOrderAcceptedResponse(
+                    UserOrderSearchResponse(
                             toOrderResource(order),
-                            toUserResource(order.user)
+                            toAnonymizedUserResource(order.user)
                     )
                 }
         )
