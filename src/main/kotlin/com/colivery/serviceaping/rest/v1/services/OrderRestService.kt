@@ -76,8 +76,8 @@ class OrderRestService(
         return Flux.fromIterable(this.orderRepository.searchOrdersInRange(shapeFactory.createCircle())
                 .map { order ->
                     UserOrderSearchResponse(
-                            toOrderResource(order),
-                            toAnonymizedUserResource(order.user)
+                            order = toOrderResource(order),
+                            user = toAnonymizedUserResource(order.user)
                     )
                 }
         )

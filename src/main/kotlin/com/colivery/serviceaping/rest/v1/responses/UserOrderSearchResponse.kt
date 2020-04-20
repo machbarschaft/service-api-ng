@@ -5,5 +5,5 @@ import com.colivery.serviceaping.rest.v1.resources.OrderResource
 
 data class UserOrderSearchResponse(
         val order: OrderResource,
-        val driver: AnonymizedUserResource?
+        val user: AnonymizedUserResource?
 )
