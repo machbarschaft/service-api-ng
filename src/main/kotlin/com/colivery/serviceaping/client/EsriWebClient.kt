@@ -14,11 +14,10 @@ class EsriWebClient(val configuration: EsriConfiguration) {
     private val city = "City"
     private val country = "Country"
 
-    //TODO use esri token
     private val fixedParameters = mapOf(
             "f" to listOf("json"),
-            "outFields" to listOf(listOf(postal, city, country).joinToString(separator = ","))
-            // "forStorage" to listOf("true")
+            "outFields" to listOf(listOf(postal, city, country).joinToString(separator = ",")),
+            "forStorage" to listOf("true")
     )
 
     //TODO error handling
@@ -29,6 +28,7 @@ class EsriWebClient(val configuration: EsriConfiguration) {
                 .uri { uriBuilder -> uriBuilder
                         .path(configuration.findAddressesUri)
                         .queryParams(LinkedMultiValueMap(fixedParameters))
+                        .queryParam("token", configuration.token)
                         .queryParam("singleLine", zipCode.plus(" ").plus(countryCode))
                         .build()
                 }.exchange()
