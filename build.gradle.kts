@@ -39,6 +39,7 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:6.12.2")
     implementation("org.liquibase:liquibase-core:3.6.3")
     implementation("com.vladmihalcea:hibernate-types-52:2.9.8")
+    implementation( "com.neovisionaries:nv-i18n:1.27")
     runtimeOnly("org.postgresql:postgresql:42.2.12")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
