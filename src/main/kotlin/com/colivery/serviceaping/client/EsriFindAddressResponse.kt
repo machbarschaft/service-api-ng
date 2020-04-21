@@ -11,7 +11,7 @@ data class AddressCandidate(val address: String, val location: Location, val att
 
 data class Location(val x: Double, val y: Double)
 
-data class Attributes(val city: String, val postal: String, val country: String)
+data class Attributes(val City: String, val Postal: String, val Country: String)
 
 fun Location.toGeoPointResource() = GeoPointResource(y, x)
 
@@ -19,9 +19,9 @@ fun AddressCandidate.toLocationResource() =
         LocationResource(
                 street =  null,
                 streetNo = null,
-                city = attributes.city,
-                zipCode = attributes.postal,
-                countryCode = CountryCode.getByAlpha3Code(attributes.country),
+                city = attributes.City,
+                zipCode = attributes.Postal,
+                countryCode = CountryCode.getByAlpha3Code(attributes.Country),
                 location = location.toGeoPointResource(),
                 locationGeoHash = encode(location.y, location.x)
                 )
