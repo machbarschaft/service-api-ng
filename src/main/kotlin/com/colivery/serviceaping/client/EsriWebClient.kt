@@ -1,7 +1,5 @@
 package com.colivery.serviceaping.client
 
-import com.colivery.serviceaping.business.spatial.EsriConfiguration
-import com.colivery.serviceaping.rest.v1.resources.LocationResource
 import com.neovisionaries.i18n.CountryCode
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
@@ -17,8 +15,9 @@ class EsriWebClient(val configuration: EsriConfiguration) {
 
     private val fixedAttributes = mapOf(
             "f" to "json",
-            "outFields" to listOf(postal, city, country).joinToString(separator = ","),
-            "forStorage" to "true")
+            "outFields" to listOf(postal, city, country).joinToString(separator = ",")
+           // "forStorage" to "true"
+    )
 
     public fun findAddresses(zipCode: String, countryCode: CountryCode): Mono<AddressCandidate> {
         return WebClient.create(configuration.url)
@@ -26,7 +25,7 @@ class EsriWebClient(val configuration: EsriConfiguration) {
                 .uri(configuration.findAddressesUri)
                 .attributes { attributes ->
                     attributes.putAll(fixedAttributes)
-                    attributes.put("token", configuration.token)
+                   // attributes.put("token", configuration.token)
                     attributes.put("singleLine", zipCode.plus(" ").plus(countryCode))
                 }.exchange()
                 .flatMap { response -> response.bodyToMono(FindAddressesResponse::class.java) }
