@@ -1,33 +1,37 @@
 package com.colivery.serviceaping.client
 
+import com.colivery.serviceaping.business.spatial.EsriConfiguration
 import com.colivery.serviceaping.rest.v1.resources.LocationResource
 import com.neovisionaries.i18n.CountryCode
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 
 @Service
-class EsriWebClient {
+class EsriWebClient(val configuration: EsriConfiguration) {
 
-    @Value("\${esri.url}")
-    private val esriUrl: String = " "
+    private val postal = "Postal"
+    private val city = "City"
+    private val country = "Country"
 
-    @Value("\${esri.findAddresses.uri}")
-    private val findAddressesUri: String = " "
+    private val fixedAttributes = mapOf(
+            "f" to "json",
+            "outFields" to listOf(postal, city, country).joinToString(separator = ","),
+            "forStorage" to "true")
 
-    private val fixedAttributes = mapOf("f" to "json", "outFields" to "Match_addr,Addr_type")
+    public fun findAddresses(zipCode: String, countryCode: CountryCode): Mono<AddressCandidate> {
+        return WebClient.create(configuration.url)
+                .get()
+                .uri(configuration.findAddressesUri)
+                .attributes { attributes ->
+                    attributes.putAll(fixedAttributes)
+                    attributes.put("token", configuration.token)
+                    attributes.put("singleLine", zipCode.plus(" ").plus(countryCode))
+                }.exchange()
+                .flatMap { response -> response.bodyToMono(FindAddressesResponse::class.java) }
+                .flatMap { response -> response.candidates.maxBy { it.score }?.toMono() }
+    }
 
-    private val singleLineAttribute = "singleLine"
-
-    fun findAddresses(zipCode: String, countryCode: CountryCode): LocationResource =
-            WebClient.create(esriUrl)
-                    .get()
-                    .uri(findAddressesUri)
-                    .attributes { attributes ->
-                        attributes.putAll(fixedAttributes)
-                        attributes.put(singleLineAttribute, zipCode.plus(" ").plus(countryCode))
-                    }.retrieve()
-                    
 
 }
