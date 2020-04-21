@@ -14,13 +14,15 @@ class EsriWebClient(val configuration: EsriConfiguration) {
     private val city = "City"
     private val country = "Country"
 
+    //TODO use esri token
     private val fixedParameters = mapOf(
             "f" to listOf("json"),
             "outFields" to listOf(listOf(postal, city, country).joinToString(separator = ","))
             // "forStorage" to listOf("true")
     )
 
-    public fun findAddresses(zipCode: String, countryCode: CountryCode): Mono<AddressCandidate> {
+    //TODO error handling
+    fun findAddresses(zipCode: String, countryCode: CountryCode): Mono<AddressCandidate> {
 
         return WebClient.create(configuration.url)
                 .get()
