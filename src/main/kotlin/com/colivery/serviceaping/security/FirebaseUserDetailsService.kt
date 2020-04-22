@@ -1,7 +1,6 @@
 package com.colivery.serviceaping.security
 
 import com.colivery.serviceaping.persistence.repository.UserRepository
-import org.springframework.context.annotation.Profile
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
@@ -11,7 +10,6 @@ import javax.transaction.Transactional
 
 @Service
 @Transactional
-@Profile("!development")
 class FirebaseUserDetailsService(
         private val userRepository: UserRepository
 ) : ReactiveUserDetailsService {

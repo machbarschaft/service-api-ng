@@ -1,8 +1,8 @@
 package com.colivery.serviceaping.rest.v1.services
 
-import com.colivery.serviceaping.business.spatial.calculateGeoHash
-import com.colivery.serviceaping.dto.UserOrderAcceptedResponse
-import com.colivery.serviceaping.dto.UserOrderResponse
+import com.colivery.serviceaping.business.spatial.encodeGeoHash
+import com.colivery.serviceaping.rest.v1.responses.UserOrderAcceptedResponse
+import com.colivery.serviceaping.rest.v1.responses.UserOrderResponse
 import com.colivery.serviceaping.extensions.getUser
 import com.colivery.serviceaping.extensions.toGeoPoint
 import com.colivery.serviceaping.mapping.toOrderResource
@@ -63,7 +63,7 @@ class UserRestService(
             user.zipCode = updateUserDto.zipCode
             user.city = updateUserDto.city
             user.phone = updateUserDto.phone
-            user.locationGeoHash = calculateGeoHash(updateUserDto.location)
+            user.locationGeoHash = encodeGeoHash(updateUserDto.location)
             user.location = updateUserDto.location.toGeoPoint(this.geometryFactory)
 
             this.userRepository.save(user)
@@ -120,7 +120,7 @@ class UserRestService(
                     email = createUserDto.email,
                     firebaseUid = firebaseToken.uid,
                     location = createUserDto.location.toGeoPoint(this.geometryFactory),
-                    locationGeoHash = calculateGeoHash(createUserDto.location),
+                    locationGeoHash = encodeGeoHash(createUserDto.location),
                     phone = createUserDto.phone
             ))
 
