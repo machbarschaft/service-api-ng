@@ -20,12 +20,16 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 @RestController
+@Validated
 @RequestMapping("/v1/order", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OrderRestService(
         private val orderRepository: OrderRepository,
@@ -122,8 +126,9 @@ class OrderRestService(
     }
 
     @GetMapping
-    fun searchOrdersInRange(@RequestParam latitude: Double, @RequestParam longitude: Double,
-                            @RequestParam range: Int): Flux<UserOrderSearchResponse> {
+    fun searchOrdersInRange(@RequestParam @Min(-90) @Max(90) latitude: Double,
+                            @RequestParam @Min(-180) @Max(80) longitude: Double,
+                            @RequestParam @Min(1) @Max(20) range: Int): Flux<UserOrderSearchResponse> {
         var shapeFactory = GeometricShapeFactory(geometryFactory)
         //simply defining how many points the circle will have..
         shapeFactory.setNumPoints(32)
