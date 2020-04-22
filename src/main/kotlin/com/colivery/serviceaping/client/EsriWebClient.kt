@@ -1,8 +1,10 @@
 package com.colivery.serviceaping.client
 
 import com.neovisionaries.i18n.CountryCode
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
+import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
@@ -25,14 +27,20 @@ class EsriWebClient(val configuration: EsriConfiguration) {
 
         return WebClient.create(configuration.url)
                 .get()
-                .uri { uriBuilder -> uriBuilder
-                        .path(configuration.findAddressesUri)
-                        .queryParams(LinkedMultiValueMap(fixedParameters))
-                        .queryParam("token", configuration.token)
-                        .queryParam("singleLine", zipCode.plus(" ").plus(countryCode))
-                        .build()
-                }.exchange()
-                .flatMap { it.bodyToMono(FindAddressesResponse::class.java) }
+                .uri { uriBuilder ->
+                    uriBuilder
+                            .path(configuration.findAddressesUri)
+                            .queryParams(LinkedMultiValueMap(fixedParameters))
+                            .queryParam("token", configuration.token)
+                            .queryParam("singleLine", zipCode.plus(" ").plus(countryCode))
+                            .build()
+                }.retrieve()
+                .onStatus(HttpStatus::isError, this::errorToException)
+                .bodyToMono(FindAddressesResponse::class.java)
                 .flatMap { it.candidates.maxBy { it.score }?.toMono() }
     }
+
+    fun errorToException(response: ClientResponse): Mono<EsriClientException> =
+            response.bodyToMono(String::class.java)
+                    .flatMap{ Mono.error<EsriClientException>(EsriClientException(it, response.statusCode().name)) }
 }
