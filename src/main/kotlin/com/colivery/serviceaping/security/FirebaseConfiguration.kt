@@ -28,7 +28,7 @@ class FirebaseConfiguration {
                 .setDatabaseUrl(databaseUrl)
                 .setProjectId(projectId)
 
-        val options = if (this.credentialsPath !== null) {
+        val options = if (this.credentialsPath !== null && this.credentialsPath != "") {
             optionsBuilder.setCredentials(
                     GoogleCredentials.fromStream(
                             Files.newInputStream(Paths.get(this.credentialsPath))
