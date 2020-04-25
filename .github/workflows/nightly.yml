@@ -43,7 +43,7 @@ jobs:
             --image gcr.io/model-link-272316/colivery-api-ng:dev \
             --concurrency=default \
             --memory=512Mi \
-            --set-env-vars=MaxRAM=512m,Dspring.datasource.url=jdbc:postgresql:///colivery-develop,Dspring.datasource.password=$database_password,Dspring.datasource.user=postgres,Dspring.cloud.gcp.sql.enabled=true \
+            --set-env-vars=MaxRAM=512m,profiles_active=nightly \
             --region=europe-west1 \
             --platform=managed
         env:
