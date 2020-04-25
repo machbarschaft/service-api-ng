@@ -1,17 +1,18 @@
 package com.colivery.serviceaping.rest.v1.services
 
 import com.colivery.serviceaping.business.spatial.Distance
-import com.colivery.serviceaping.dto.UserOrderAcceptedResponse
 import com.colivery.serviceaping.extensions.getUser
+import com.colivery.serviceaping.mapping.toAnonymizedUserResource
 import com.colivery.serviceaping.mapping.toOrderEntity
 import com.colivery.serviceaping.mapping.toOrderItemEntity
 import com.colivery.serviceaping.mapping.toOrderResource
 import com.colivery.serviceaping.mapping.toUserResource
+import com.colivery.serviceaping.persistence.OrderStatus
 import com.colivery.serviceaping.persistence.repository.OrderItemRepository
 import com.colivery.serviceaping.persistence.repository.OrderRepository
 import com.colivery.serviceaping.rest.v1.dto.order.CreateOrderDto
-import com.colivery.serviceaping.rest.v1.dto.order.UpdateOrderStatusDto
 import com.colivery.serviceaping.rest.v1.resources.OrderResource
+import com.colivery.serviceaping.rest.v1.responses.UserOrderSearchResponse
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.util.GeometricShapeFactory
@@ -19,12 +20,16 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 @RestController
+@Validated
 @RequestMapping("/v1/order", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OrderRestService(
         private val orderRepository: OrderRepository,
@@ -32,19 +37,80 @@ class OrderRestService(
         private val geometryFactory: GeometryFactory
 ) {
 
-    @PatchMapping("/{orderId}/status")
-    fun updateOrderStatus(@PathVariable orderId: UUID, @RequestBody request:
-    UpdateOrderStatusDto): ResponseEntity<Mono<Void>> {
+    @PatchMapping("/{orderId}/deliver")
+    fun deliverOrder(@PathVariable orderId: UUID, authentication: Authentication):
+            ResponseEntity<Mono<OrderResource>> {
+        val user = authentication.getUser()
         val order = this.orderRepository.findByIdOrNull(orderId)
-        if (order === null) {
-            return ResponseEntity.notFound()
-                    .build()
+                ?: return ResponseEntity.notFound().build()
+
+        if (order.status != OrderStatus.ACCEPTED || user != order.driverUser) {
+            return ResponseEntity.badRequest().build()
         }
 
-        order.status = request.status
+        order.status = OrderStatus.DELIVERED
 
         this.orderRepository.save(order)
-        return ResponseEntity.ok(Mono.empty())
+
+        return ResponseEntity.ok(Mono.just(toOrderResource(order)))
+    }
+
+    @PatchMapping("/{orderId}/accept")
+    fun acceptOrder(@PathVariable orderId: UUID, authentication: Authentication):
+            ResponseEntity<Mono<OrderResource>> {
+        val user = authentication.getUser()
+        val order = this.orderRepository.findByIdOrNull(orderId)
+                ?: return ResponseEntity.notFound().build()
+
+        if (order.status != OrderStatus.TO_BE_DELIVERED) {
+            return ResponseEntity.badRequest().build()
+        }
+
+        order.driverUser = user
+        order.status = OrderStatus.ACCEPTED
+
+        this.orderRepository.save(order)
+
+        return ResponseEntity.ok(Mono.just(toOrderResource(order)))
+    }
+
+    @PatchMapping("/{orderId}/cancel")
+    fun cancelOrder(@PathVariable orderId: UUID, authentication: Authentication):
+            ResponseEntity<Mono<OrderResource>> {
+        val user = authentication.getUser()
+        val order = this.orderRepository.findByIdOrNull(orderId)
+                ?: return ResponseEntity.notFound().build()
+
+        if ((order.status != OrderStatus.ACCEPTED && order.status != OrderStatus.TO_BE_DELIVERED)
+                || user != order.user) {
+            return ResponseEntity.badRequest().build()
+        }
+
+        order.driverUser = null
+        order.status = OrderStatus.CONSUMER_CANCELLED
+
+        this.orderRepository.save(order)
+
+        return ResponseEntity.ok(Mono.just(toOrderResource(order)))
+    }
+
+    @PatchMapping("/{orderId}/abort")
+    fun abortOrderDelivery(@PathVariable orderId: UUID, authentication: Authentication):
+            ResponseEntity<Mono<OrderResource>> {
+        val user = authentication.getUser()
+        val order = this.orderRepository.findByIdOrNull(orderId)
+                ?: return ResponseEntity.notFound().build()
+
+        if (order.status != OrderStatus.ACCEPTED || user != order.driverUser) {
+            return ResponseEntity.badRequest().build()
+        }
+
+        order.driverUser = null
+        order.status = OrderStatus.TO_BE_DELIVERED
+
+        this.orderRepository.save(order)
+
+        return ResponseEntity.ok(Mono.just(toOrderResource(order)))
     }
 
     @PostMapping
@@ -60,8 +126,9 @@ class OrderRestService(
     }
 
     @GetMapping
-    fun searchOrdersInRange(@RequestParam latitude: Double, @RequestParam longitude: Double,
-                            @RequestParam range: Int): Flux<UserOrderAcceptedResponse> {
+    fun searchOrdersInRange(@RequestParam @Min(-90) @Max(90) latitude: Double,
+                            @RequestParam @Min(-180) @Max(80) longitude: Double,
+                            @RequestParam @Min(1) @Max(20) range: Int): Flux<UserOrderSearchResponse> {
         var shapeFactory = GeometricShapeFactory(geometryFactory)
         //simply defining how many points the circle will have..
         shapeFactory.setNumPoints(32)
@@ -73,11 +140,11 @@ class OrderRestService(
         //size is the diameter of the circle (in "coordinate degrees")..
         shapeFactory.setSize(2.0 * rangeInDegrees)
 
-        return Flux.fromIterable(this.orderRepository.searchOrdersInRange(shapeFactory.createCircle())
+        return Flux.fromIterable(this.orderRepository.searchOpenOrdersInRange(shapeFactory.createCircle())
                 .map { order ->
-                    UserOrderAcceptedResponse(
-                            toOrderResource(order),
-                            toUserResource(order.user)
+                    UserOrderSearchResponse(
+                            order = toOrderResource(order),
+                            user = toAnonymizedUserResource(order.user)
                     )
                 }
         )

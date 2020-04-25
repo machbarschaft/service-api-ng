@@ -1,9 +1,9 @@
 package com.colivery.serviceaping.rest.v1.responses
 
+import com.colivery.serviceaping.rest.v1.resources.AnonymizedUserResource
 import com.colivery.serviceaping.rest.v1.resources.OrderResource
-import com.colivery.serviceaping.rest.v1.resources.UserResource
 
-data class UserOrderAcceptedResponse(
+data class UserOrderSearchResponse(
         val order: OrderResource,
-        val consumer: UserResource
+        val user: AnonymizedUserResource
 )
