@@ -39,6 +39,12 @@ jobs:
           touch empty.ignore
           gcloud config set project model-link-272316
           gcloud builds submit --ignore-file=empty.ignore --tag gcr.io/model-link-272316/colivery-api-ng:dev
-          gcloud run deploy service-api-ng-nightly --image gcr.io/model-link-272316/colivery-api-ng:dev --concurrency=default --memory=512Mi --set-env-vars=MaxRAM=512m,Dspring.datasource.url=jdbc:postgresql:///colivery-develop,Dspring.datasource.password=$database_password,Dspring.datasource.user=postgres --region=europe-west1 --platform=managed
+          gcloud run deploy service-api-ng-nightly \
+            --image gcr.io/model-link-272316/colivery-api-ng:dev \
+            --concurrency=default \
+            --memory=512Mi \
+            --set-env-vars=MaxRAM=512m,Dspring.datasource.url=jdbc:postgresql:///colivery-develop,Dspring.datasource.password=$database_password,Dspring.datasource.user=postgres,Dspring.cloud.gcp.sql.enabled=true \
+            --region=europe-west1 \
+            --platform=managed
         env:
           database_password: ${{ secrets.DEVELOP_DB_PASSWORD }}
