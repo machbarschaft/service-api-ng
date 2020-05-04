@@ -40,7 +40,6 @@ dependencies {
     implementation("org.liquibase:liquibase-core:3.6.3")
     implementation("com.vladmihalcea:hibernate-types-52:2.9.8")
     runtimeOnly("org.postgresql:postgresql:42.2.12")
-    runtimeOnly("com.zaxxer.HikariCP:3.4.3")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
