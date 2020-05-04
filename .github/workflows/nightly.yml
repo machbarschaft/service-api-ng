@@ -43,7 +43,7 @@ jobs:
             --image gcr.io/model-link-272316/colivery-api-ng:dev \
             --concurrency=default \
             --memory=512Mi \
-            --set-env-vars=MaxRAM=512m,profiles_active=cloudsql \
+            --set-env-vars=MaxRAM=512m,profiles_active=cloudsql,database_password=$database_password \
             --region=europe-west1 \
             --platform=managed
         env:
