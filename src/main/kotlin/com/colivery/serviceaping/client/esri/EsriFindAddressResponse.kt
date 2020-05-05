@@ -9,16 +9,16 @@ import com.neovisionaries.i18n.CountryCode
 
 class EsriFindAddressesResponse(override val candidates: List<EsriAddressCandidate>) : FindAddressesResponse
 
-data class EsriAddressCandidate(val address: String, val esriLocation: EsriLocation, val esriAttributes: EsriAttributes, override val score: Int) : AddressCandidate {
+data class EsriAddressCandidate(val address: String, val location: EsriLocation, val attributes: EsriAttributes, override val score: Int) : AddressCandidate {
     override fun toLocationResource(): LocationResource =
             LocationResource(
                     street = null,
                     streetNo = null,
-                    city = esriAttributes.City,
-                    zipCode = esriAttributes.Postal,
-                    countryCode = CountryCode.getByAlpha3Code(esriAttributes.Country),
-                    location = esriLocation.toGeoPointResource(),
-                    locationGeoHash = encode(esriLocation.y, esriLocation.x)
+                    city = attributes.City,
+                    zipCode = attributes.Postal,
+                    countryCode = CountryCode.getByAlpha3Code(attributes.Country),
+                    location = location.toGeoPointResource(),
+                    locationGeoHash = encode(location.y, location.x)
             )
 }
 

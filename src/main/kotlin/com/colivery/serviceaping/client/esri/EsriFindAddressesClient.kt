@@ -1,12 +1,11 @@
 package com.colivery.serviceaping.client.esri
 
-import com.colivery.serviceaping.client.FindAddressesResponse
 import com.colivery.serviceaping.client.FindAdressesClient
 import com.neovisionaries.i18n.CountryCode
 import org.springframework.stereotype.Service
 
 @Service
-class EsriFindAdressesClient(override val configuration: EsriConfiguration) : FindAdressesClient {
+class EsriFindAddressesClient(override val configuration: EsriConfiguration) : FindAdressesClient {
 
     private val postal = "Postal"
     private val city = "City"
