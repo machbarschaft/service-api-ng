@@ -1,4 +1,4 @@
-package com.colivery.serviceaping.client
+package com.colivery.serviceaping.client.esri
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
@@ -7,6 +7,4 @@ import org.springframework.context.annotation.Configuration
 @ConfigurationProperties(prefix = "esri")
 class EsriConfiguration() {
     lateinit var url: String
-    lateinit var findAddressesUri: String
-    lateinit var token: String
 }

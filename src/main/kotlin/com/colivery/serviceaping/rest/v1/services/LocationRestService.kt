@@ -1,7 +1,6 @@
 package com.colivery.serviceaping.rest.v1.services
 
-import com.colivery.serviceaping.client.EsriWebClient
-import com.colivery.serviceaping.client.toLocationResource
+import com.colivery.serviceaping.client.FindAdressesClient
 import com.colivery.serviceaping.rest.v1.resources.LocationResource
 import com.neovisionaries.i18n.CountryCode
 import org.springframework.http.MediaType
@@ -14,12 +13,12 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping("/v1/location", produces = [MediaType.APPLICATION_JSON_VALUE])
 
-class LocationRestService(val esriWebClient: EsriWebClient) {
+class LocationRestService(val findAdressesClient: FindAdressesClient) {
 
     @GetMapping
     fun geoCodeAddress(@RequestParam zipCode: String, @RequestParam countryCode: CountryCode): Mono<LocationResource> =
-    esriWebClient.findAddresses(zipCode = zipCode, countryCode = countryCode)
-            .filter{ candidate -> candidate.score == 100 }
-            .map{ it.toLocationResource() }
+            findAdressesClient.findAddresses(zipCode = zipCode, countryCode = countryCode)
+                    .filter { candidate -> candidate.score == 100 }
+                    .map { it.toLocationResource() }
 
 }
