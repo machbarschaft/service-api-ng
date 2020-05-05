@@ -1,15 +1,14 @@
 package com.colivery.serviceaping.client.esri
 
 import com.colivery.serviceaping.business.spatial.GeoHash.Companion.encode
-import com.colivery.serviceaping.client.AddressCandidate
-import com.colivery.serviceaping.client.FindAddressesResponse
+import com.colivery.serviceaping.client.Address
 import com.colivery.serviceaping.rest.v1.resources.GeoPointResource
 import com.colivery.serviceaping.rest.v1.resources.LocationResource
 import com.neovisionaries.i18n.CountryCode
 
-class EsriFindAddressesResponse(override val candidates: List<EsriAddressCandidate>) : FindAddressesResponse
+class EsriGeocodeResponse(val candidates: List<EsriAddress>)
 
-data class EsriAddressCandidate(val address: String, val location: EsriLocation, val attributes: EsriAttributes, override val score: Int) : AddressCandidate {
+data class EsriAddress(val address: String, val location: EsriLocation, val attributes: EsriAttributes, val score: Int) : Address {
     override fun toLocationResource(): LocationResource =
             LocationResource(
                     street = null,

@@ -6,5 +6,5 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @ConfigurationProperties(prefix = "esri")
 class EsriConfiguration() {
-    lateinit var url: String
+    lateinit var findAddressesUrl: String
 }
