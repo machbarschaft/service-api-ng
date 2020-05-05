@@ -6,7 +6,7 @@ name: CI/CD Nightly
 # events but only for the master branch
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop,feature/deployment ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -38,12 +38,12 @@ jobs:
         run: |
           touch empty.ignore
           gcloud config set project model-link-272316
-          gcloud builds submit --ignore-file=empty.ignore --tag gcr.io/model-link-272316/colivery-api-ng:dev
+          gcloud builds submit --ignore-file=empty.ignore --tag gcr.io/model-link-272316/colivery-api-ng:nightly
           gcloud run deploy service-api-ng-nightly \
-            --image gcr.io/model-link-272316/colivery-api-ng:dev \
+            --image gcr.io/model-link-272316/colivery-api-ng:nightly \
             --concurrency=default \
             --memory=512Mi \
-            --set-env-vars=MaxRAM=512m,profiles_active=cloudsql,database_password=$database_password \
+            --set-env-vars=MaxRAM=512m,profiles_active=cloudsql,database_password=$database_password,database_name=nightly \
             --region=europe-west1 \
             --platform=managed
         env:
