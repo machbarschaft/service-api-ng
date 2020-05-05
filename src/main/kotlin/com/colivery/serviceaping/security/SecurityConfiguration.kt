@@ -30,6 +30,7 @@ class SecurityConfiguration(
                     // Allow unauthorized access to createUser endpoint, since the user cant be
                     // validated against our own DB before creating. This endpoint performs own
                     // validation.
+                    .pathMatchers(HttpMethod.POST, "/v1/location").permitAll()
                     .pathMatchers(HttpMethod.POST, "/v1/user").permitAll()
                     // By default, we want everything to be authenticated (via Firebase)
                     .anyExchange().authenticated()
