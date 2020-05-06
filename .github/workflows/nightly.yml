@@ -43,7 +43,7 @@ jobs:
             --image gcr.io/model-link-272316/colivery-api-ng:nightly \
             --concurrency=default \
             --memory=512Mi \
-            --set-env-vars=^:^MaxRAM=512m:profiles_active=google_maps_api,cloudsql:database_password=$database_password:database_name=nightly:google_maps_api_key=$google_maps_api_key \
+            --set-env-vars=^:^MaxRAM=512m:profiles_active=esri_api,cloudsql:database_password=$database_password:database_name=nightly:google_maps_api_key=$google_maps_api_key \
             --region=europe-west1 \
             --platform=managed
         env:
