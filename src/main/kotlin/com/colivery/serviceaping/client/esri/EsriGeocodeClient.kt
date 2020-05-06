@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 
 @Service
-@Profile("esri-api")
+@Profile("esri_api")
 class EsriGeocodeClient(val configuration: EsriConfiguration) : GeocodeClient {
 
     private val postal = "Postal"

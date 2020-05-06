@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 
 @Service
-@Profile("google-maps-api")
+@Profile("google_maps_api")
 class GoogleGeocodeClient(val configuration: GoogleConfiguration, val objectMapper: ObjectMapper) : GeocodeClient {
 
 
