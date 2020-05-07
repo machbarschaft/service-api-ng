@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.bind.support.WebExchangeBindException
 import reactor.core.publisher.Mono
 import javax.validation.ConstraintViolationException
 
@@ -22,6 +23,20 @@ class CustomExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 //and remove the method name from the message..
                 .body(Mono.just(ErrorResource(e.localizedMessage.substringAfter("."))))
+    }
+
+    @ExceptionHandler(WebExchangeBindException::class)
+    fun handleWebExchangeBindException(e: Exception): ResponseEntity<Mono<ErrorResource>> {
+        //For WebExchangeBindException, we return a BAD REQUEST
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Mono.just(ErrorResource(e.localizedMessage)))
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException::class)
+    fun handleAccessDeniedException(e: Exception): ResponseEntity<Mono<ErrorResource>> {
+        //For AccessDeniedException, we return an UNAUTHORIZED
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Mono.empty())
     }
 
     @ExceptionHandler(Throwable::class)

@@ -25,7 +25,10 @@ class FirebaseUserDetailsService(
             this.userRepository
                     .findByFirebaseUid(username)
                     ?.let {
-                        Mono.just(User.withUsername(it.id.toString()).password("").roles("USER")
+                        Mono.just(User
+                                .withUsername(it.id.toString())
+                                .password("")
+                                .roles(if (it.isAdmin) "ADMIN" else "USER")
                                 .build())
                     } ?: Mono.empty()
 }

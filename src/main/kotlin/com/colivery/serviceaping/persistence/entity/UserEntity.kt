@@ -43,7 +43,10 @@ data class UserEntity(
         var phone: String,
 
         @Column(nullable = false)
-        val firebaseUid: String
+        val firebaseUid: String,
+
+        @Column(nullable = false)
+        var isAdmin: Boolean = false
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
