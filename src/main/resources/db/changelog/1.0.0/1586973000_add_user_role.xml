@@ -5,9 +5,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet author="gmaia" id="add_user_admin_flag">
+    <changeSet author="gmaia" id="add_user_role">
         <addColumn tableName="user">
-            <column name="is_admin" type="boolean" defaultValueBoolean="false">
+            <column name="role" type="varchar(20)" defaultValue="USER">
                 <constraints nullable="false"/>
             </column>
         </addColumn>

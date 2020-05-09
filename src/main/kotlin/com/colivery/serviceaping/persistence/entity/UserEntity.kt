@@ -45,9 +45,14 @@ data class UserEntity(
         @Column(nullable = false)
         val firebaseUid: String,
 
+        @Enumerated(EnumType.STRING)
         @Column(nullable = false)
-        var isAdmin: Boolean = false
+        var role: Role = Role.USER
 ) {
+    enum class Role {
+        USER, HOTLINE, ADMIN
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID? = null

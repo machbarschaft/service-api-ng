@@ -28,7 +28,7 @@ class FirebaseUserDetailsService(
                         Mono.just(User
                                 .withUsername(it.id.toString())
                                 .password("")
-                                .roles(if (it.isAdmin) "ADMIN" else "USER")
+                                .roles(it.role.name)
                                 .build())
                     } ?: Mono.empty()
 }

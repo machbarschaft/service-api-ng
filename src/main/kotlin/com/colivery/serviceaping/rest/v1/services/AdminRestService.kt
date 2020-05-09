@@ -1,6 +1,7 @@
 package com.colivery.serviceaping.rest.v1.services
 
 import com.colivery.serviceaping.mapping.toUserResource
+import com.colivery.serviceaping.persistence.entity.UserEntity
 import com.colivery.serviceaping.persistence.repository.UserRepository
 import com.colivery.serviceaping.rest.v1.dto.user.PatchUserAdminDto
 import com.colivery.serviceaping.rest.v1.resources.UserResource
@@ -30,7 +31,7 @@ class AdminRestService(private val userRepository: UserRepository) {
             return Mono.empty()
         }
 
-        user.isAdmin = userPatch.isAdmin!!
+        user.role = UserEntity.Role.valueOf(userPatch.role!!)
         user = userRepository.save(user)
 
         return Mono.just(toUserResource(user))
