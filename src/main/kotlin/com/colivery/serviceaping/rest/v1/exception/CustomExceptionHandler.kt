@@ -19,7 +19,7 @@ class CustomExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException::class)
-    fun handleConstraintViolationException(ex: Exception): ResponseEntity<Mono<ErrorResource>> {
+    fun handleConstraintViolationException(ex: ConstraintViolationException): ResponseEntity<Mono<ErrorResource>> {
         //For ConstraintViolationException, we return a BAD REQUEST
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 //and remove the method name from the message..
@@ -27,27 +27,31 @@ class CustomExceptionHandler {
     }
 
     @ExceptionHandler(WebExchangeBindException::class)
-    fun handleWebExchangeBindException(ex: Exception): ResponseEntity<Mono<ErrorResource>> {
+    fun handleWebExchangeBindException(ex: WebExchangeBindException): ResponseEntity<Mono<ErrorResource>> {
+        var message = "Error. "
+        for (error in ex.bindingResult.fieldErrors) {
+            message += "Field '" + error.field + "' has an invalid value (" + error.rejectedValue + "). "
+        }
         //For WebExchangeBindException, we return a BAD REQUEST
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Mono.just(ErrorResource(ex.localizedMessage)))
+                .body(Mono.just(ErrorResource(message)))
     }
 
     @ExceptionHandler(ConversionFailedException::class)
-    fun handleConversionFailedException(ex: RuntimeException): ResponseEntity<Mono<ErrorResource>>? {
+    fun handleConversionFailedException(ex: ConversionFailedException): ResponseEntity<Mono<ErrorResource>>? {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Mono.just(ErrorResource(ex.localizedMessage)))
     }
 
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException::class)
-    fun handleAccessDeniedException(ex: Exception): ResponseEntity<Mono<ErrorResource>> {
+    fun handleAccessDeniedException(ex: AccessDeniedException): ResponseEntity<Mono<ErrorResource>> {
         //For AccessDeniedException, we return an UNAUTHORIZED
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Mono.empty())
     }
 
     @ExceptionHandler(Throwable::class)
-    fun handleException(ex: Exception): ResponseEntity<Mono<ErrorResource>> {
+    fun handleException(ex: Throwable): ResponseEntity<Mono<ErrorResource>> {
         //For all other errors, we log
         logger.error("ERROR!", ex)
         //and return a INTERNAL SERVER ERROR, with a small message, hiding the exception from the User
