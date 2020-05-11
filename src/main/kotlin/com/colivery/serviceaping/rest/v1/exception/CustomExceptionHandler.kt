@@ -44,7 +44,8 @@ class CustomExceptionHandler {
     }
 
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException::class)
-    fun handleAccessDeniedException(ex: AccessDeniedException): ResponseEntity<Mono<ErrorResource>> {
+    fun handleAccessDeniedException(ex: org.springframework.security.access.AccessDeniedException)
+            : ResponseEntity<Mono<ErrorResource>> {
         //For AccessDeniedException, we return an UNAUTHORIZED
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Mono.empty())
