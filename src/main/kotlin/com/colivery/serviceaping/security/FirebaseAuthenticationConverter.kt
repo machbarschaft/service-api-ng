@@ -1,6 +1,7 @@
 package com.colivery.serviceaping.security
 
 import com.colivery.serviceaping.persistence.repository.UserRepository
+import com.colivery.serviceaping.util.extractBearerToken
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseToken
@@ -23,7 +24,7 @@ class FirebaseAuthenticationConverter(
 ) : ServerAuthenticationConverter {
 
     override fun convert(exchange: ServerWebExchange): Mono<Authentication> {
-        val token: String? = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)?.let { getToken(it) }
+        val token: String? = extractBearerToken(exchange.request.headers)
 
         if (token === null) {
             return Mono.empty()
@@ -36,14 +37,6 @@ class FirebaseAuthenticationConverter(
                     PreAuthenticatedAuthenticationToken(it.firebaseUid, it)
                 }
     }
-
-    private fun getToken(authHeader: String?) =
-            authHeader?.let {
-                when {
-                    it.startsWith("Bearer ") -> it.drop(7)
-                    else -> null
-                }
-            }
 
     private fun getFirebaseUser(token: String): Mono<FirebaseToken> {
         return try {

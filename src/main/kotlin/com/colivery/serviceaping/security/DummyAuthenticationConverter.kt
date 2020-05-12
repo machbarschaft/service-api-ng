@@ -1,9 +1,8 @@
 package com.colivery.serviceaping.security
 
-import com.colivery.serviceaping.persistence.entity.UserEntity
 import com.colivery.serviceaping.persistence.repository.UserRepository
+import com.colivery.serviceaping.util.extractBearerToken
 import org.springframework.context.annotation.Profile
-import org.springframework.http.HttpHeaders
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
@@ -18,11 +17,10 @@ class DummyAuthenticationConverter(
 ) : ServerAuthenticationConverter {
 
     override fun convert(exchange: ServerWebExchange): Mono<Authentication> {
-        val authHeader: String? = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)
-
-        val user = when(authHeader) {
+        val authHeader = extractBearerToken(exchange.request.headers)
+        val user = when (authHeader) {
             null -> Mono.empty()
-            else ->  Mono.justOrEmpty(this.userRepository.findByFirebaseUid(authHeader))
+            else -> Mono.justOrEmpty(this.userRepository.findByFirebaseUid(authHeader))
         }
 
         return user.map {
