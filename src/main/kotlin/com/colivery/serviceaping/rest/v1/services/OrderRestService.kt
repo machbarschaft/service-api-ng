@@ -23,7 +23,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
-import org.springframework.validation.Errors
 import org.springframework.validation.SmartValidator
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -39,8 +38,7 @@ import javax.validation.constraints.Min
 class OrderRestService(
         private val orderRepository: OrderRepository,
         private val orderItemRepository: OrderItemRepository,
-        private val geometryFactory: GeometryFactory,
-        private val smartValidator: SmartValidator
+        private val geometryFactory: GeometryFactory
 ) {
 
     @PatchMapping("/{orderId}/deliver")
@@ -120,20 +118,9 @@ class OrderRestService(
     }
 
     @PostMapping
-    fun createOrder(@RequestBody order: CreateOrderDto, errors: Errors, authentication: Authentication):
+    fun createOrder(@RequestBody order: CreateOrderDto, authentication: Authentication):
             ResponseEntity<Mono<OrderResource>> {
         val user = authentication.getUser()
-
-        if(order.source == Source.APP) {
-            smartValidator.validate(order, errors, App::class)
-        } else if (order.source == Source.HOTLINE)  {
-            smartValidator.validate(order, errors, Hotline::class)
-        }
-
-        if(errors.hasErrors()) {
-            return ResponseEntity.badRequest()
-                    .build()
-        }
 
         val orderEntity = this.orderRepository.save(toOrderEntity(order, user))
         this.orderItemRepository.saveAll(order.items.map {
