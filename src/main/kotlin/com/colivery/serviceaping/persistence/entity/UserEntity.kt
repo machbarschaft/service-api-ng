@@ -1,5 +1,7 @@
 package com.colivery.serviceaping.persistence.entity
 
+import com.colivery.serviceaping.persistence.Source
+import org.hibernate.annotations.Type
 import org.locationtech.jts.geom.Point
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -43,7 +45,13 @@ data class UserEntity(
         var phone: String,
 
         @Column(nullable = false)
-        val firebaseUid: String
+        val firebaseUid: String,
+
+        @Column(nullable = false)
+        @Type(type = "com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType")
+        @Enumerated(EnumType.STRING)
+        var source: Source
+
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

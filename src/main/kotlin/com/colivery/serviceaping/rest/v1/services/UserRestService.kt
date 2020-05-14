@@ -10,6 +10,7 @@ import com.colivery.serviceaping.mapping.toUserResource
 import com.colivery.serviceaping.persistence.entity.UserEntity
 import com.colivery.serviceaping.persistence.repository.OrderRepository
 import com.colivery.serviceaping.persistence.repository.UserRepository
+import com.colivery.serviceaping.rest.v1.dto.App
 import com.colivery.serviceaping.rest.v1.dto.user.CreateUserDto
 import com.colivery.serviceaping.rest.v1.dto.user.UpdateUserDto
 import com.colivery.serviceaping.rest.v1.resources.UserResource
@@ -22,6 +23,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -51,7 +53,8 @@ class UserRestService(
         )
     }
 
-    @PutMapping
+    @PutMapping("/app")
+    @Validated(App::class)
     fun updateOwnUser(@RequestBody updateUserDto: UpdateUserDto, authentication: Authentication):
             Mono<UserResource> {
         return Mono.fromCallable {
@@ -91,8 +94,9 @@ class UserRestService(
         this.firebaseAuth.deleteUser(user.firebaseUid)
         this.userRepository.delete(user)
     }
+    @PostMapping("/app")
+    @Validated(App::class)
 
-    @PostMapping
     fun createUser(@RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
             ResponseEntity<Mono<UserResource>> {
         val unauthorized = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -121,7 +125,8 @@ class UserRestService(
                     firebaseUid = firebaseToken.uid,
                     location = createUserDto.location.toGeoPoint(this.geometryFactory),
                     locationGeoHash = encodeGeoHash(createUserDto.location),
-                    phone = createUserDto.phone
+                    phone = createUserDto.phone,
+                    source = createUserDto.source
             ))
 
             return ResponseEntity.ok(Mono.just(toUserResource(user)))

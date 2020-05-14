@@ -18,5 +18,6 @@ fun toUserResource(user: UserEntity) =
                 locationGeoHash = user.locationGeoHash,
                 phone = user.phone,
                 createdAt = user.createdAt,
-                updatedAt = user.updatedAt
+                updatedAt = user.updatedAt,
+                source = user.source
         )

@@ -14,7 +14,8 @@ fun toOrderResource(order: OrderEntity) =
                 status = order.status,
                 createdAt = order.createdAt,
                 updatedAt = order.updatedAt,
-                items = toItemSet(order.items)
+                items = toItemSet(order.items),
+                source = order.source
         )
 
 fun toOrderEntity(order: CreateOrderDto, user: UserEntity) =
@@ -22,5 +23,6 @@ fun toOrderEntity(order: CreateOrderDto, user: UserEntity) =
                 user = user,
                 hint = order.hint,
                 maxPrice = order.maxPrice,
-                status = OrderStatus.TO_BE_DELIVERED
+                status = OrderStatus.TO_BE_DELIVERED,
+                source = order.source
         )

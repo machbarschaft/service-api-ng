@@ -10,6 +10,8 @@ import com.colivery.serviceaping.mapping.toUserResource
 import com.colivery.serviceaping.persistence.OrderStatus
 import com.colivery.serviceaping.persistence.repository.OrderItemRepository
 import com.colivery.serviceaping.persistence.repository.OrderRepository
+import com.colivery.serviceaping.rest.v1.dto.App
+import com.colivery.serviceaping.rest.v1.dto.Hotline
 import com.colivery.serviceaping.rest.v1.dto.order.CreateOrderDto
 import com.colivery.serviceaping.rest.v1.resources.OrderResource
 import com.colivery.serviceaping.rest.v1.responses.UserOrderSearchResponse
@@ -113,8 +115,22 @@ class OrderRestService(
         return ResponseEntity.ok(Mono.just(toOrderResource(order)))
     }
 
-    @PostMapping
-    fun createOrder(@RequestBody order: CreateOrderDto, authentication: Authentication): Mono<OrderResource> {
+    @PostMapping("/app")
+    @Validated(App::class)
+    fun createOrderApp(@RequestBody order: CreateOrderDto, authentication: Authentication): Mono<OrderResource> {
+        val user = authentication.getUser()
+
+        val orderEntity = this.orderRepository.save(toOrderEntity(order, user))
+        this.orderItemRepository.saveAll(order.items.map {
+            toOrderItemEntity(it, orderEntity)
+        })
+
+        return Mono.just(toOrderResource(orderEntity))
+    }
+
+    @PostMapping("/hotline")
+    @Validated(Hotline::class)
+    fun createOrderHotline(@RequestBody order: CreateOrderDto, authentication: Authentication): Mono<OrderResource> {
         val user = authentication.getUser()
 
         val orderEntity = this.orderRepository.save(toOrderEntity(order, user))
