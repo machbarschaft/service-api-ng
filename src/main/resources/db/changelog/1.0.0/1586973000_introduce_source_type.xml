@@ -7,12 +7,12 @@
 
     <changeSet author="fbrueck" id="introduce_source_type">
         <addColumn tableName="user">
-            <column name="source_type" type="varchar(16)" defaultValue="APP">
+            <column name="source" type="varchar(16)" defaultValue="APP">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
         <addColumn tableName="order">
-            <column name="source_type" type="varchar(16)"  defaultValue="APP">
+            <column name="source" type="varchar(16)"  defaultValue="APP">
                 <constraints nullable="false"/>
             </column>
         </addColumn>

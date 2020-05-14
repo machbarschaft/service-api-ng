@@ -8,6 +8,7 @@ import com.colivery.serviceaping.mapping.toOrderItemEntity
 import com.colivery.serviceaping.mapping.toOrderResource
 import com.colivery.serviceaping.mapping.toUserResource
 import com.colivery.serviceaping.persistence.OrderStatus
+import com.colivery.serviceaping.persistence.Source
 import com.colivery.serviceaping.persistence.repository.OrderItemRepository
 import com.colivery.serviceaping.persistence.repository.OrderRepository
 import com.colivery.serviceaping.rest.v1.dto.App
@@ -22,6 +23,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.validation.Errors
+import org.springframework.validation.SmartValidator
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
@@ -36,7 +39,8 @@ import javax.validation.constraints.Min
 class OrderRestService(
         private val orderRepository: OrderRepository,
         private val orderItemRepository: OrderItemRepository,
-        private val geometryFactory: GeometryFactory
+        private val geometryFactory: GeometryFactory,
+        private val smartValidator: SmartValidator
 ) {
 
     @PatchMapping("/{orderId}/deliver")
@@ -115,30 +119,28 @@ class OrderRestService(
         return ResponseEntity.ok(Mono.just(toOrderResource(order)))
     }
 
-    @PostMapping("/app")
-    @Validated(App::class)
-    fun createOrderApp(@RequestBody order: CreateOrderDto, authentication: Authentication): Mono<OrderResource> {
+    @PostMapping
+    fun createOrder(@RequestBody order: CreateOrderDto, errors: Errors, authentication: Authentication):
+            ResponseEntity<Mono<OrderResource>> {
         val user = authentication.getUser()
+
+        if(order.source == Source.APP) {
+            smartValidator.validate(order, errors, App::class)
+        } else if (order.source == Source.HOTLINE)  {
+            smartValidator.validate(order, errors, Hotline::class)
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .build()
+        }
 
         val orderEntity = this.orderRepository.save(toOrderEntity(order, user))
         this.orderItemRepository.saveAll(order.items.map {
             toOrderItemEntity(it, orderEntity)
         })
 
-        return Mono.just(toOrderResource(orderEntity))
-    }
-
-    @PostMapping("/hotline")
-    @Validated(Hotline::class)
-    fun createOrderHotline(@RequestBody order: CreateOrderDto, authentication: Authentication): Mono<OrderResource> {
-        val user = authentication.getUser()
-
-        val orderEntity = this.orderRepository.save(toOrderEntity(order, user))
-        this.orderItemRepository.saveAll(order.items.map {
-            toOrderItemEntity(it, orderEntity)
-        })
-
-        return Mono.just(toOrderResource(orderEntity))
+        return ResponseEntity.ok(Mono.just(toOrderResource(orderEntity)))
     }
 
     @GetMapping
