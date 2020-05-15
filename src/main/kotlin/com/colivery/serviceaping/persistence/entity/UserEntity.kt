@@ -50,9 +50,17 @@ data class UserEntity(
         @Column(nullable = false)
         @Type(type = "com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType")
         @Enumerated(EnumType.STRING)
-        var source: Source
+        var source: Source,
+
+        @Enumerated(EnumType.STRING)
+        @Column(nullable = false)
+        var role: Role = Role.USER
 
 ) {
+    enum class Role {
+        USER, HOTLINE, ADMIN
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID? = null
