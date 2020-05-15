@@ -14,17 +14,17 @@ import javax.persistence.*
 @Table(name = "`user`")
 @EntityListeners(AuditingEntityListener::class)
 data class UserEntity(
-        @Column(nullable = false)
-        var firstName: String,
+        @Column(nullable = true)
+        var firstName: String?,
 
-        @Column(nullable = false)
-        var lastName: String,
+        @Column(nullable = true)
+        var lastName: String?,
 
-        @Column(nullable = false)
-        var street: String,
+        @Column(nullable = true)
+        var street: String?,
 
-        @Column(nullable = false)
-        var streetNo: String,
+        @Column(nullable = true)
+        var streetNo: String?,
 
         @Column(nullable = false)
         var zipCode: String,
@@ -32,8 +32,8 @@ data class UserEntity(
         @Column(nullable = false)
         var city: String,
 
-        @Column(nullable = false)
-        var email: String,
+        @Column(nullable = true)
+        var email: String?,
 
         @Column(nullable = false)
         var location: Point,
