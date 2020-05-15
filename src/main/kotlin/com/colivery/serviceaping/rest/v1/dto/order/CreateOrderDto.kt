@@ -10,18 +10,18 @@ import javax.validation.constraints.NotNull
 
 @Validated
 data class CreateOrderDto(
-        @NotNull(groups = [Hotline::class])
+        @field:NotNull(groups = [Hotline::class])
         val hint: String?,
 
-        @Nullable
+        @field:Nullable
         val maxPrice: Int?,
 
-        @NotNull
+        @field:NotNull
         val userId: Int,
 
-        @NotEmpty(groups = [App::class])
+        @field:NotEmpty(groups = [App::class])
         val items: Set<CreateOrderItemDto>,
 
-        @NotNull
+        @field:NotNull
         val source: Source
 )

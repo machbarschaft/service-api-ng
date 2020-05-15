@@ -10,25 +10,25 @@ import javax.validation.constraints.NotNull
 
 @Validated
 data class UpdateUserDto(
-        @NotEmpty(groups = [App::class])
+        @field:NotEmpty(groups = [App::class])
         val firstName: String,
-        @NotEmpty(groups = [App::class])
+        @field:NotEmpty(groups = [App::class])
         val lastName: String,
-        @NotEmpty(groups = [App::class])
+        @field:NotEmpty(groups = [App::class])
         val street: String,
-        @NotEmpty(groups = [App::class])
+        @field:NotEmpty(groups = [App::class])
         val streetNo: String,
-        @NotEmpty
+        @field:NotEmpty
         val zipCode: String,
-        @NotEmpty
+        @field:NotEmpty
         val city: String,
-        @NotEmpty(groups = [App::class])
-        @Email(groups = [App::class])
+        @field:NotEmpty(groups = [App::class])
+        @field:Email(groups = [App::class])
         val email: String,
-        @NotNull
+        @field:NotNull
         val location: GeoPointResource,
-        @NotEmpty
+        @field:NotEmpty
         val phone: String,
-        @NotNull
+        @field:NotNull
         val source: Source
 )

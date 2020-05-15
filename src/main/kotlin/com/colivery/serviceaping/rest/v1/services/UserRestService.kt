@@ -5,9 +5,12 @@ import com.colivery.serviceaping.extensions.getUser
 import com.colivery.serviceaping.extensions.toGeoPoint
 import com.colivery.serviceaping.mapping.toOrderResource
 import com.colivery.serviceaping.mapping.toUserResource
+import com.colivery.serviceaping.persistence.Source
 import com.colivery.serviceaping.persistence.entity.UserEntity
 import com.colivery.serviceaping.persistence.repository.OrderRepository
 import com.colivery.serviceaping.persistence.repository.UserRepository
+import com.colivery.serviceaping.rest.v1.dto.App
+import com.colivery.serviceaping.rest.v1.dto.Hotline
 import com.colivery.serviceaping.rest.v1.dto.user.CreateUserDto
 import com.colivery.serviceaping.rest.v1.dto.user.UpdateUserDto
 import com.colivery.serviceaping.rest.v1.resources.UserResource
@@ -22,6 +25,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
 import org.springframework.validation.SmartValidator
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
@@ -36,7 +41,8 @@ class UserRestService(
         private val orderRepository: OrderRepository,
         private val userRepository: UserRepository,
         private val firebaseAuth: FirebaseAuth,
-        private val geometryFactory: GeometryFactory
+        private val geometryFactory: GeometryFactory,
+        private val smartValidator: SmartValidator
 ) {
 
     @GetMapping("/orders")
@@ -56,6 +62,18 @@ class UserRestService(
     @PutMapping
     fun updateOwnUser(@RequestBody updateUserDto: UpdateUserDto, authentication: Authentication):
             ResponseEntity<Mono<UserResource>> {
+
+        val errors: Errors = BeanPropertyBindingResult(updateUserDto, "updateUserDto")
+
+        if(updateUserDto.source == Source.APP) {
+            smartValidator.validate(updateUserDto, errors, App::class.java)
+        } else if(updateUserDto.source == Source.HOTLINE) {
+            smartValidator.validate(updateUserDto, errors, Hotline::class.java)
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().build()
+        }
 
         return ResponseEntity.ok(Mono.fromCallable {
             val user = authentication.getUser()
@@ -103,6 +121,18 @@ class UserRestService(
         // Get the bearer token
         val token = extractBearerToken(headers)
                 ?: return unauthorized
+
+        val errors: Errors = BeanPropertyBindingResult(createUserDto, "createUserDto")
+
+        if(createUserDto.source == Source.APP) {
+            smartValidator.validate(createUserDto, errors, App::class.java)
+        } else if(createUserDto.source == Source.HOTLINE) {
+            smartValidator.validate(createUserDto, errors, Hotline::class.java)
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().build()
+        }
 
         try {
             val firebaseToken = this.firebaseAuth.verifyIdToken(token)

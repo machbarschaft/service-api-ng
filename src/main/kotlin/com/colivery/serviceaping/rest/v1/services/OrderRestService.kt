@@ -6,7 +6,6 @@ import com.colivery.serviceaping.mapping.toAnonymizedUserResource
 import com.colivery.serviceaping.mapping.toOrderEntity
 import com.colivery.serviceaping.mapping.toOrderItemEntity
 import com.colivery.serviceaping.mapping.toOrderResource
-import com.colivery.serviceaping.mapping.toUserResource
 import com.colivery.serviceaping.persistence.OrderStatus
 import com.colivery.serviceaping.persistence.Source
 import com.colivery.serviceaping.persistence.repository.OrderItemRepository
@@ -23,14 +22,18 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
 import org.springframework.validation.SmartValidator
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
+import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
+
 
 @RestController
 @Validated
@@ -38,7 +41,8 @@ import javax.validation.constraints.Min
 class OrderRestService(
         private val orderRepository: OrderRepository,
         private val orderItemRepository: OrderItemRepository,
-        private val geometryFactory: GeometryFactory
+        private val geometryFactory: GeometryFactory,
+        private val smartValidator: SmartValidator
 ) {
 
     @PatchMapping("/{orderId}/deliver")
@@ -120,6 +124,19 @@ class OrderRestService(
     @PostMapping
     fun createOrder(@RequestBody order: CreateOrderDto, authentication: Authentication):
             ResponseEntity<Mono<OrderResource>> {
+
+        val errors: Errors = BeanPropertyBindingResult(order, "order")
+
+        if(order.source == Source.APP) {
+            smartValidator.validate(order, errors, App::class.java)
+        } else if(order.source == Source.HOTLINE) {
+            smartValidator.validate(order, errors, Hotline::class.java)
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().build()
+        }
+
         val user = authentication.getUser()
 
         val orderEntity = this.orderRepository.save(toOrderEntity(order, user))
