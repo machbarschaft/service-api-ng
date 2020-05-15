@@ -5,7 +5,7 @@ import java.util.*
 
 data class AnonymizedUserResource(
         val id: UUID?,
-        val firstName: String,
+        val firstName: String?,
         val zipCode: String,
         val city: String,
         val locationGeoHash: String,
