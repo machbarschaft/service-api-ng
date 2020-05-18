@@ -113,6 +113,13 @@ class UserRestService(
         this.userRepository.delete(user)
     }
 
+    @GetMapping("/search")
+    //@PreAuthorize("hasRole('ROLE_HOTLINE')")
+    fun searchUser(@RequestParam phoneNumber: String): Mono<UserResource> =
+            Mono.justOrEmpty(this.userRepository.findByPhone(phoneNumber)?.let {
+                toUserResource(it)
+            })
+
     @PostMapping
     fun createUser(@Valid @RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
             ResponseEntity<Mono<UserResource>> {
