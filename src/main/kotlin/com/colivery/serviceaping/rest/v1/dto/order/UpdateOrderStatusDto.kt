@@ -6,6 +6,9 @@ import javax.validation.constraints.NotNull
 
 @Validated
 data class UpdateOrderStatusDto(
-        @NotNull
-        val status: OrderStatus
+        @field:NotNull
+        val status: OrderStatus,
+
+        @field:NotNull
+        val userId: Int
 )

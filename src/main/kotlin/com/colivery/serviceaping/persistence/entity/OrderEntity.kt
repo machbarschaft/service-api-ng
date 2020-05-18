@@ -1,6 +1,7 @@
 package com.colivery.serviceaping.persistence.entity
 
 import com.colivery.serviceaping.persistence.OrderStatus
+import com.colivery.serviceaping.persistence.Source
 import org.hibernate.annotations.Type
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -31,7 +32,12 @@ data class OrderEntity(
         @Column(nullable = false)
         @Type(type = "com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType")
         @Enumerated(EnumType.STRING)
-        var status: OrderStatus
+        var status: OrderStatus,
+
+        @Column(nullable = false)
+        @Type(type = "com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType")
+        @Enumerated(EnumType.STRING)
+        var source: Source
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
