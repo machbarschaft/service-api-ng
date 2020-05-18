@@ -1,8 +1,6 @@
 package com.colivery.serviceaping.rest.v1.services
 
 import com.colivery.serviceaping.business.spatial.encodeGeoHash
-import com.colivery.serviceaping.rest.v1.responses.UserOrderAcceptedResponse
-import com.colivery.serviceaping.rest.v1.responses.UserOrderResponse
 import com.colivery.serviceaping.extensions.getUser
 import com.colivery.serviceaping.extensions.toGeoPoint
 import com.colivery.serviceaping.mapping.toOrderResource
@@ -13,6 +11,8 @@ import com.colivery.serviceaping.persistence.repository.UserRepository
 import com.colivery.serviceaping.rest.v1.dto.user.CreateUserDto
 import com.colivery.serviceaping.rest.v1.dto.user.UpdateUserDto
 import com.colivery.serviceaping.rest.v1.resources.UserResource
+import com.colivery.serviceaping.rest.v1.responses.UserOrderAcceptedResponse
+import com.colivery.serviceaping.rest.v1.responses.UserOrderResponse
 import com.colivery.serviceaping.util.extractBearerToken
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -91,6 +91,13 @@ class UserRestService(
         this.firebaseAuth.deleteUser(user.firebaseUid)
         this.userRepository.delete(user)
     }
+
+    @GetMapping("/search")
+    //@PreAuthorize("hasRole('ROLE_HOTLINE')")
+    fun searchUser(@RequestParam phoneNumber: String): Mono<UserResource> =
+            Mono.justOrEmpty(this.userRepository.findByPhone(phoneNumber)?.let {
+                toUserResource(it)
+            })
 
     @PostMapping
     fun createUser(@RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):

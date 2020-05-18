@@ -8,5 +8,6 @@ interface UserRepository : CrudRepository<UserEntity, UUID> {
 
     fun findByFirebaseUid(firebaseUid: String): UserEntity?
     fun existsByFirebaseUid(firebaseUid: String): Boolean
+    fun findByPhone(phoneNumber: String): UserEntity?
 
 }
