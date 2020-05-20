@@ -21,6 +21,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven(url = "http://oss.jfrog.org/artifactory/oss-snapshot-local/")
 }
 
 extra["springCloudVersion"] = "Hoxton.SR3"
@@ -39,7 +40,10 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:6.12.2")
     implementation("org.liquibase:liquibase-core:3.6.3")
     implementation("com.vladmihalcea:hibernate-types-52:2.9.8")
-    implementation( "com.neovisionaries:nv-i18n:1.27")
+    implementation("com.neovisionaries:nv-i18n:1.27")
+    implementation("io.springfox:springfox-swagger2:3.0.0-SNAPSHOT")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT")
+    implementation("io.springfox:springfox-spring-webflux:3.0.0-SNAPSHOT")
     runtimeOnly("org.postgresql:postgresql:42.2.12")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
