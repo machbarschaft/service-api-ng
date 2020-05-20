@@ -21,6 +21,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
@@ -93,7 +94,7 @@ class UserRestService(
     }
 
     @GetMapping("/search")
-    //@PreAuthorize("hasRole('ROLE_HOTLINE')")
+    @PreAuthorize("hasRole('ROLE_HOTLINE')")
     fun searchUser(@RequestParam phoneNumber: String): Mono<UserResource> =
             Mono.justOrEmpty(this.userRepository.findByPhone(phoneNumber)?.let {
                 toUserResource(it)
