@@ -5,6 +5,7 @@ import com.colivery.serviceaping.util.extractBearerToken
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseToken
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpHeaders
 import org.springframework.security.core.Authentication
@@ -23,7 +24,24 @@ class FirebaseAuthenticationConverter(
         private val userRepository: UserRepository
 ) : ServerAuthenticationConverter {
 
+    @Value("\${chatbot.api-key}")
+    lateinit var apiKey: String
+
     override fun convert(exchange: ServerWebExchange): Mono<Authentication> {
+        return if (isFirebaseAuthenticationRequest(exchange)) {
+            getFirebaseUserAuthentication(exchange)
+        } else {
+            getApiUserAuthentication(exchange)
+        }
+    }
+
+    private fun isFirebaseAuthenticationRequest(exchange: ServerWebExchange): Boolean =
+            exchange.request.headers
+                    .getFirst(HttpHeaders.AUTHORIZATION)
+                    .orEmpty()
+                    .startsWith("bearer-")
+
+    private fun getFirebaseUserAuthentication(exchange: ServerWebExchange): Mono<Authentication> {
         val token: String? = extractBearerToken(exchange.request.headers)
 
         if (token === null) {
@@ -34,6 +52,21 @@ class FirebaseAuthenticationConverter(
                 .flatMap {
                     Mono.justOrEmpty(this.userRepository.findByFirebaseUid(it.uid))
                 }.map {
+                    PreAuthenticatedAuthenticationToken(it.firebaseUid, it)
+                }
+    }
+
+    private fun getApiUserAuthentication(exchange: ServerWebExchange?): Mono<Authentication> {
+
+        val key: String? = exchange?.request?.headers?.getFirst(HttpHeaders.AUTHORIZATION)
+        val firebaseUid: String? = exchange?.request?.headers?.getFirst("firebase-uid")
+
+        if (key === null || firebaseUid === null || key != apiKey) {
+            return Mono.empty()
+        }
+
+        return Mono.justOrEmpty(userRepository.findByFirebaseUid(firebaseUid))
+                .map {
                     PreAuthenticatedAuthenticationToken(it.firebaseUid, it)
                 }
     }
