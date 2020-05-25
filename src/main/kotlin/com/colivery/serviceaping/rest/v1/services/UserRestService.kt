@@ -114,7 +114,7 @@ class UserRestService(
     }
 
     @PostMapping
-    fun createUser(@Valid @RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
+    fun createUser(@RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
             ResponseEntity<Mono<UserResource>> {
         val unauthorized = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .build<Mono<UserResource>>()
