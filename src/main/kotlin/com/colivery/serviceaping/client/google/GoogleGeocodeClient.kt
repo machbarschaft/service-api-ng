@@ -5,6 +5,7 @@ import com.colivery.serviceaping.client.GeocodeClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.neovisionaries.i18n.CountryCode
+import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpStatus
 import org.springframework.http.codec.json.Jackson2JsonDecoder
@@ -15,7 +16,7 @@ import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 
 @Service
-@Profile("google_maps_api")
+@Primary
 class GoogleGeocodeClient(val configuration: GoogleConfiguration, val objectMapper: ObjectMapper) : GeocodeClient {
 
 

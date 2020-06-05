@@ -20,7 +20,7 @@ data class CreateOrderDto(
         val userId: Int,
 
         @field:NotEmpty(groups = [App::class])
-        val items: Set<CreateOrderItemDto>,
+        val items: Set<CreateOrderItemDto>?,
 
         @field:NotNull
         val source: Source

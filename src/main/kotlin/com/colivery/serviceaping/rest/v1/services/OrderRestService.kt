@@ -140,9 +140,10 @@ class OrderRestService(
         val user = authentication.getUser()
 
         val orderEntity = this.orderRepository.save(toOrderEntity(order, user))
-        this.orderItemRepository.saveAll(order.items.map {
+
+        order.items?.let { this.orderItemRepository.saveAll(it.map {
             toOrderItemEntity(it, orderEntity)
-        })
+        }) }
 
         return ResponseEntity.ok(Mono.just(toOrderResource(orderEntity)))
     }

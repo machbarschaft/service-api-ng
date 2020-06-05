@@ -34,6 +34,11 @@ class SecurityConfiguration(
                     // validation.
                     .pathMatchers(HttpMethod.GET, "/v1/location").permitAll()
                     .pathMatchers(HttpMethod.POST, "/v1/user").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/v2/api-docs",
+                            "/swagger-resources/**",
+                            "/swagger-ui.html**",
+                            "/webjars/**",
+                            "favicon.ico").permitAll()
                     // By default, we want everything to be authenticated (via Firebase)
                     .anyExchange().authenticated()
                     .and().csrf().disable()
