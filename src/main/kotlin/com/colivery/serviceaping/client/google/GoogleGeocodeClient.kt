@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.neovisionaries.i18n.CountryCode
 import org.springframework.context.annotation.Primary
-import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpStatus
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Service
@@ -19,11 +18,9 @@ import reactor.kotlin.core.publisher.toMono
 @Primary
 class GoogleGeocodeClient(val configuration: GoogleConfiguration, val objectMapper: ObjectMapper) : GeocodeClient {
 
-
-
-
     override fun findAddresses(zipCode: String, countryCode: CountryCode): Mono<Address> {
 
+        // TODO: Extract this somewhere else, doesn't really belong in the geo client
         val newMapper = objectMapper.copy()
         newMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE;
 
@@ -38,6 +35,7 @@ class GoogleGeocodeClient(val configuration: GoogleConfiguration, val objectMapp
                     uriBuilder
                             .queryParam("key", configuration.apiKey)
                             .queryParam("address", zipCode.plus("+").plus(countryCode))
+                            .queryParam("components", "country:$countryCode")
                             .build()
                 }.retrieve()
                 .onStatus(HttpStatus::isError, this::errorToException)
