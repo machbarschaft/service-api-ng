@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -112,6 +113,13 @@ class UserRestService(
         this.firebaseAuth.deleteUser(user.firebaseUid)
         this.userRepository.delete(user)
     }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ROLE_HOTLINE')")
+    fun searchUser(@RequestParam phoneNumber: String): Mono<UserResource> =
+            Mono.justOrEmpty(this.userRepository.findByPhone(phoneNumber)?.let {
+                toUserResource(it)
+            })
 
     @PostMapping
     fun createUser(@RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
