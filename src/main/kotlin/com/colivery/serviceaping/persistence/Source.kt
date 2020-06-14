@@ -2,5 +2,6 @@ package com.colivery.serviceaping.persistence
 
 enum class Source {
     HOTLINE,
-    APP
+    APP,
+    ADMIN_DASHBOARD
 }

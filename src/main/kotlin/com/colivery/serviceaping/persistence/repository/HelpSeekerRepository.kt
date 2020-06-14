@@ -4,6 +4,4 @@ import com.colivery.serviceaping.persistence.entity.HelpSeekerEntity
 import org.springframework.data.repository.CrudRepository
 import java.util.*
 
-interface HelpSeekerRepository : CrudRepository<HelpSeekerEntity, UUID> {
-
-}
+interface HelpSeekerRepository : CrudRepository<HelpSeekerEntity, UUID>
