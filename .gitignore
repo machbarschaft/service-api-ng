@@ -35,3 +35,5 @@ application-dev.properties
 application-development.properties
 
 util/
+
+serviceAccountCredentials.json
