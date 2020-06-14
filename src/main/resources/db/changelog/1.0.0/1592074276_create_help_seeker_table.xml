@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+<changeSet id="create_help_seeker_table" author="nschoellhorn">
+    <sql dbms="postgresql">
+        CREATE TYPE source_platform AS ENUM ('HOTLINE', 'ADMIN');
+    </sql>
+    <createTable tableName="help_seeker">
+        <column name="id" type="UUID" defaultValueComputed="${uuid_function}">
+            <constraints nullable="false" primaryKey="true"/>
+        </column>
+        <column name="user_id" type="UUID">
+            <constraints nullable="true" foreignKeyName="fk_1592087211" referencedTableName="user" referencedColumnNames="id"/>
+        </column>
+        <column name="geo_hash" type="char(5)">
+            <constraints nullable="true"/>
+        </column>
+        <column name="full_name" type="varchar(100)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="phone" type="varchar(30)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="source_platform" type="source_platform">
+            <constraints nullable="false"/>
+        </column>
+        <column name="admin_user_id" type="UUID">
+            <constraints nullable="false" foreignKeyName="fk_1592088008" referencedTableName="user" referencedColumnNames="id"/>
+        </column>
+    </createTable>
+</changeSet>
+</databaseChangeLog>
