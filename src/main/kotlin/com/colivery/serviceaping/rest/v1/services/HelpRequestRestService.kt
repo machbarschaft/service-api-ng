@@ -13,19 +13,18 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
-import org.springframework.validation.SmartValidator
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 import java.util.*
-import javax.transaction.Transactional
 
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-@Transactional
+@Validated
 @RequestMapping("/v1/help-request", produces = [MediaType.APPLICATION_JSON_VALUE])
-class HelpRequestService(
+class HelpRequestRestService(
         private val helpRequestRepository: HelpRequestRepository
 ) {
 

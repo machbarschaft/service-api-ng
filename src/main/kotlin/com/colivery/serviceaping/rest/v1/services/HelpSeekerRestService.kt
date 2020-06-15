@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @Validated
 @RequestMapping("/v1/help-seeker", produces = [MediaType.APPLICATION_JSON_VALUE])
-class HelpSeekerService(
+class HelpSeekerRestService(
         private val helpSeekerRepository: HelpSeekerRepository
 ) {
 
