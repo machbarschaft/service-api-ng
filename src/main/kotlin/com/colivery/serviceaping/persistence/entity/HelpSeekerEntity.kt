@@ -11,7 +11,7 @@ import javax.persistence.*
 @EntityListeners(AuditingEntityListener::class)
 data class HelpSeekerEntity(
         @ManyToOne(optional = true, fetch = FetchType.EAGER)
-        var user: UserEntity,
+        var user: UserEntity?,
 
         var fullName: String? = null,
 
