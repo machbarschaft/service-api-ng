@@ -16,7 +16,7 @@ data class HelpRequestEntity(
         @Column(nullable = true)
         var requestText: String,
 
-        @Column(nullable = false)
+        @Column(nullable = false, name = "status")
         @Type(type = "com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType")
         @Enumerated(EnumType.STRING)
         var requestStatus: RequestStatus,

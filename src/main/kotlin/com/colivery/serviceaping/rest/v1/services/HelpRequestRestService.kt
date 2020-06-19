@@ -70,13 +70,13 @@ class HelpRequestRestService(
             return ResponseEntity.notFound().build()
         }
 
-        val helpRequestEntity = helpRequest.get();
-        helpRequestEntity.requestStatus = updateHelpRequestStatusDto.status;
+        val helpRequestEntity = helpRequest.get()
+        helpRequestEntity.requestStatus = updateHelpRequestStatusDto.status
         helpRequestEntity.updatedAt = LocalDateTime.now()
 
-        val helpRequestEntityStored = helpRequestRepository.save(helpRequestEntity);
+        val helpRequestEntityStored = helpRequestRepository.save(helpRequestEntity)
 
-        return ResponseEntity.ok(Mono.just(toHelpRequestResource(helpRequestEntityStored)));
+        return ResponseEntity.ok(Mono.just(toHelpRequestResource(helpRequestEntityStored)))
     }
 
 }
