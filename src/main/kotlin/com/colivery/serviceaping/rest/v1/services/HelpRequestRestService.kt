@@ -7,6 +7,8 @@ import com.colivery.serviceaping.persistence.repository.HelpRequestRepository
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.CreateHelpRequestDto
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.UpdateHelpRequestStatusDto
 import com.colivery.serviceaping.rest.v1.resources.HelpRequestResource
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -27,6 +29,9 @@ import java.util.*
 class HelpRequestRestService(
         private val helpRequestRepository: HelpRequestRepository
 ) {
+    companion object {
+        private val logger = LoggerFactory.getLogger(HelpRequestRestService::class.java)
+    }
 
     @PostMapping
     fun createHelpRequest(@RequestBody helpRequest: CreateHelpRequestDto, authentication: Authentication):
@@ -34,7 +39,7 @@ class HelpRequestRestService(
         val errors: Errors = BeanPropertyBindingResult(helpRequest, "help_request")
 
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Mono.empty())
         }
 
         val adminUser = authentication.getUser()
@@ -45,11 +50,13 @@ class HelpRequestRestService(
     }
 
     @GetMapping("{uuid}")
-    fun getHelpRequest(@PathVariable("uuid") helpRequestId: UUID): ResponseEntity<Mono<HelpRequestResource>> {
-        val helpRequest = helpRequestRepository.findById(helpRequestId)
+    fun getHelpRequest(@PathVariable("uuid") helpRequestId: String): ResponseEntity<Mono<HelpRequestResource>> {
+        val uuid = UUID.fromString(helpRequestId) ?: return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Mono.empty())
+
+        val helpRequest = this.helpRequestRepository.findById(uuid)
 
         if (helpRequest.isEmpty) {
-            return ResponseEntity.notFound().build()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Mono.empty())
         }
 
         return ResponseEntity.ok(Mono.just(toHelpRequestResource(helpRequest.get())))
@@ -57,14 +64,14 @@ class HelpRequestRestService(
 
     @GetMapping("/")
     fun getHelpRequestList(authentication: Authentication): Flux<HelpRequestResource> {
-        return Flux.fromIterable(helpRequestRepository.findAllByAdminUser(authentication.getUser()))
+        return Flux.fromIterable(this.helpRequestRepository.findAllByAdminUser(authentication.getUser()))
                 .map { helpRequestEntity -> toHelpRequestResource(helpRequestEntity) }
     }
 
     @PutMapping("{uuid}")
     fun updateHelpRequestStatus(@RequestBody updateHelpRequestStatusDto: UpdateHelpRequestStatusDto,
                                 @PathVariable("uuid") helpRequestId: UUID): ResponseEntity<Mono<HelpRequestResource>> {
-        val helpRequest = helpRequestRepository.findById(helpRequestId)
+        val helpRequest = this.helpRequestRepository.findById(helpRequestId)
 
         if (helpRequest.isEmpty) {
             return ResponseEntity.notFound().build()
@@ -74,7 +81,7 @@ class HelpRequestRestService(
         helpRequestEntity.requestStatus = updateHelpRequestStatusDto.status
         helpRequestEntity.updatedAt = LocalDateTime.now()
 
-        val helpRequestEntityStored = helpRequestRepository.save(helpRequestEntity)
+        val helpRequestEntityStored = this.helpRequestRepository.save(helpRequestEntity)
 
         return ResponseEntity.ok(Mono.just(toHelpRequestResource(helpRequestEntityStored)))
     }
