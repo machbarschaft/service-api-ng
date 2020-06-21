@@ -4,7 +4,6 @@ services:
   database:
     container_name: colivery_database
     image: postgis/postgis:11-3.0
-    restart: always
     ports:
       - 5432:5432
     environment:
