@@ -18,9 +18,9 @@ fun toHelpSeekerEntity(helpSeeker: CreateHelpSeekerDto, adminUser: UserEntity) =
 fun toHelpSeekerResource(helpSeeker: HelpSeekerEntity) =
         HelpSeekerResource(
                 id = helpSeeker.id,
-                enteredBy = helpSeeker.enteredBy,
+                enteredBy = toUserResource(helpSeeker.enteredBy),
                 fullName = helpSeeker.fullName,
                 phone = helpSeeker.phone,
                 source = helpSeeker.source,
-                user = helpSeeker.user
+                user = helpSeeker.user?.let(::toUserResource)
         )

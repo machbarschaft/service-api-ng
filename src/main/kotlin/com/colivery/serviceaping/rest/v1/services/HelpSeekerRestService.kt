@@ -5,6 +5,7 @@ import com.colivery.serviceaping.mapping.toHelpSeekerEntity
 import com.colivery.serviceaping.mapping.toHelpSeekerResource
 import com.colivery.serviceaping.persistence.repository.HelpSeekerRepository
 import com.colivery.serviceaping.rest.v1.dto.`help-seeker`.CreateHelpSeekerDto
+import com.colivery.serviceaping.rest.v1.exception.BadRequestException
 import com.colivery.serviceaping.rest.v1.resources.HelpSeekerResource
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -29,16 +30,17 @@ class HelpSeekerRestService(
 
     @PostMapping
     fun createHelpSeeker(@RequestBody helpSeeker: CreateHelpSeekerDto, authentication: Authentication):
-            ResponseEntity<Mono<HelpSeekerResource>> {
+            Mono<HelpSeekerResource> {
         val errors: Errors = BeanPropertyBindingResult(helpSeeker, "help_seeker")
 
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build()
+            throw BadRequestException()
         }
 
         val helpSeekerEntity = this.helpSeekerRepository.save(toHelpSeekerEntity(helpSeeker, authentication.getUser()))
 
-        return ResponseEntity.ok(Mono.just(toHelpSeekerResource(helpSeekerEntity)))
+        val resource = toHelpSeekerResource(helpSeekerEntity)
+        return Mono.just(resource)
     }
 
 

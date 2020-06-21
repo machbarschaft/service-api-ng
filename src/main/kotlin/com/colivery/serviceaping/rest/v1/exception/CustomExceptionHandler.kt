@@ -51,6 +51,10 @@ class CustomExceptionHandler {
                 .body(Mono.empty())
     }
 
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequest(ex: BadRequestException) : ResponseEntity<Mono<ErrorResource>> =
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Mono.empty())
+
     @ExceptionHandler(Throwable::class)
     fun handleException(ex: Throwable): ResponseEntity<Mono<ErrorResource>> {
         //For all other errors, we log
