@@ -19,5 +19,5 @@ fun toHelpRequestResource(helpRequest: HelpRequestEntity) =
                 updatedAt =  helpRequest.updatedAt,
                 requestStatus =  helpRequest.requestStatus,
                 requestText =  helpRequest.requestText,
-                adminUser =  helpRequest.adminUser
+                adminUser =  toUserResource(helpRequest.adminUser)
         )

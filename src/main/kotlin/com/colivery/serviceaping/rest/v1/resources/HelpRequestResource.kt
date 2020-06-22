@@ -1,7 +1,6 @@
 package com.colivery.serviceaping.rest.v1.resources
 
 import com.colivery.serviceaping.persistence.RequestStatus
-import com.colivery.serviceaping.persistence.entity.UserEntity
 import java.time.LocalDateTime
 import java.util.*
 
@@ -11,5 +10,5 @@ class HelpRequestResource (
     val updatedAt: LocalDateTime,
     val requestStatus: RequestStatus,
     val requestText: String,
-    val adminUser: UserEntity
+    val adminUser: UserResource
 )

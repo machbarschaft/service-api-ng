@@ -6,8 +6,8 @@ import com.colivery.serviceaping.mapping.toHelpRequestResource
 import com.colivery.serviceaping.persistence.repository.HelpRequestRepository
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.CreateHelpRequestDto
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.UpdateHelpRequestStatusDto
+import com.colivery.serviceaping.rest.v1.exception.BadRequestException
 import com.colivery.serviceaping.rest.v1.resources.HelpRequestResource
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -29,52 +29,50 @@ import java.util.*
 class HelpRequestRestService(
         private val helpRequestRepository: HelpRequestRepository
 ) {
-    companion object {
-        private val logger = LoggerFactory.getLogger(HelpRequestRestService::class.java)
-    }
-
     @PostMapping
     fun createHelpRequest(@RequestBody helpRequest: CreateHelpRequestDto, authentication: Authentication):
-            ResponseEntity<Mono<HelpRequestResource>> {
+            Mono<ResponseEntity<HelpRequestResource>> {
         val errors: Errors = BeanPropertyBindingResult(helpRequest, "help_request")
 
         if (errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Mono.empty())
+            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build())
         }
 
         val adminUser = authentication.getUser()
+        val entity = toHelpRequestEntity(helpRequest, adminUser)
+        val helpRequestEntity = this.helpRequestRepository.save(entity)
+        val resource = toHelpRequestResource(helpRequestEntity)
 
-        val helpRequestEntity = this.helpRequestRepository.save(toHelpRequestEntity(helpRequest, adminUser))
-
-        return ResponseEntity.ok(Mono.just(toHelpRequestResource(helpRequestEntity)))
+        return Mono.just(ResponseEntity.status(HttpStatus.CREATED).body(resource))
     }
 
     @GetMapping("{uuid}")
-    fun getHelpRequest(@PathVariable("uuid") helpRequestId: String): ResponseEntity<Mono<HelpRequestResource>> {
-        val uuid = UUID.fromString(helpRequestId) ?: return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Mono.empty())
+    fun getHelpRequest(@PathVariable("uuid") helpRequestId: String): Mono<ResponseEntity<HelpRequestResource>> {
+        val uuid = UUID.fromString(helpRequestId) ?: throw BadRequestException()
 
         val helpRequest = this.helpRequestRepository.findById(uuid)
 
         if (helpRequest.isEmpty) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Mono.empty())
+            return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build())
         }
 
-        return ResponseEntity.ok(Mono.just(toHelpRequestResource(helpRequest.get())))
+        val resource = toHelpRequestResource(helpRequest.get())
+        return Mono.just(ResponseEntity.ok(resource))
     }
 
-    @GetMapping("/")
-    fun getHelpRequestList(authentication: Authentication): Flux<HelpRequestResource> {
-        return Flux.fromIterable(this.helpRequestRepository.findAllByAdminUser(authentication.getUser()))
+    @GetMapping
+    fun getHelpRequestList(): Flux<HelpRequestResource> {
+        return Flux.fromIterable(this.helpRequestRepository.findAll())
                 .map { helpRequestEntity -> toHelpRequestResource(helpRequestEntity) }
     }
 
     @PutMapping("{uuid}")
     fun updateHelpRequestStatus(@RequestBody updateHelpRequestStatusDto: UpdateHelpRequestStatusDto,
-                                @PathVariable("uuid") helpRequestId: UUID): ResponseEntity<Mono<HelpRequestResource>> {
+                                @PathVariable("uuid") helpRequestId: UUID): Mono<ResponseEntity<HelpRequestResource>> {
         val helpRequest = this.helpRequestRepository.findById(helpRequestId)
 
         if (helpRequest.isEmpty) {
-            return ResponseEntity.notFound().build()
+            return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build())
         }
 
         val helpRequestEntity = helpRequest.get()
@@ -82,8 +80,9 @@ class HelpRequestRestService(
         helpRequestEntity.updatedAt = LocalDateTime.now()
 
         val helpRequestEntityStored = this.helpRequestRepository.save(helpRequestEntity)
+        val resource = toHelpRequestResource(helpRequestEntityStored)
 
-        return ResponseEntity.ok(Mono.just(toHelpRequestResource(helpRequestEntityStored)))
+        return Mono.just(ResponseEntity.ok(resource))
     }
 
 }

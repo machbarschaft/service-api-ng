@@ -13,7 +13,7 @@ import javax.persistence.*
 @Table(name = "`help_request`")
 @EntityListeners(AuditingEntityListener::class)
 data class HelpRequestEntity(
-        @Column(nullable = true)
+        @Column(nullable = true, name = "request_text")
         var requestText: String,
 
         @Column(nullable = false, name = "status")
@@ -22,6 +22,7 @@ data class HelpRequestEntity(
         var requestStatus: RequestStatus,
 
         @ManyToOne(optional = false, fetch = FetchType.EAGER)
+        @JoinColumn(name = "admin_user_id")
         var adminUser: UserEntity
 ) {
     @Id

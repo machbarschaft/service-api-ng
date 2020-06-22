@@ -8,7 +8,6 @@ import com.colivery.serviceaping.rest.v1.dto.`help-seeker`.CreateHelpSeekerDto
 import com.colivery.serviceaping.rest.v1.exception.BadRequestException
 import com.colivery.serviceaping.rest.v1.resources.HelpSeekerResource
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.validation.BeanPropertyBindingResult

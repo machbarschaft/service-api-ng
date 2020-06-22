@@ -55,6 +55,12 @@ class CustomExceptionHandler {
     fun handleBadRequest(ex: BadRequestException) : ResponseEntity<Mono<ErrorResource>> =
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Mono.empty())
 
+    @ExceptionHandler(NotFoundException::class)
+    fun handleNotFound(ex: NotFoundException) : ResponseEntity<Mono<ErrorResource>> {
+        logger.info("handle not found exception")
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Mono.empty())
+    }
+
     @ExceptionHandler(Throwable::class)
     fun handleException(ex: Throwable): ResponseEntity<Mono<ErrorResource>> {
         //For all other errors, we log
