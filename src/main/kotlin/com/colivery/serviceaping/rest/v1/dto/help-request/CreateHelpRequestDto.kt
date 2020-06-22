@@ -11,8 +11,5 @@ class CreateHelpRequestDto (
     val requestText: String,
 
     @field:NotNull
-    val requestStatus: RequestStatus,
-
-    @field:NotNull
-    val adminUser: UUID
+    val requestStatus: RequestStatus
 )
