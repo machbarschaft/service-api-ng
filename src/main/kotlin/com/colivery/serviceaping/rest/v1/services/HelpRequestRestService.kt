@@ -4,6 +4,7 @@ import com.colivery.serviceaping.extensions.getUser
 import com.colivery.serviceaping.mapping.toHelpRequestEntity
 import com.colivery.serviceaping.mapping.toHelpRequestResource
 import com.colivery.serviceaping.persistence.repository.HelpRequestRepository
+import com.colivery.serviceaping.persistence.repository.HelpSeekerRepository
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.CreateHelpRequestDto
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.UpdateHelpRequestStatusDto
 import com.colivery.serviceaping.rest.v1.exception.BadRequestException
@@ -27,7 +28,8 @@ import java.util.*
 @Validated
 @RequestMapping("/v1/help-request", produces = [MediaType.APPLICATION_JSON_VALUE])
 class HelpRequestRestService(
-        private val helpRequestRepository: HelpRequestRepository
+        private val helpRequestRepository: HelpRequestRepository,
+        private val helpSeekerRepository: HelpSeekerRepository
 ) {
     @PostMapping
     fun createHelpRequest(@RequestBody helpRequest: CreateHelpRequestDto, authentication: Authentication):
@@ -38,8 +40,14 @@ class HelpRequestRestService(
             return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build())
         }
 
+        val helpSeeker = this.helpSeekerRepository.findById(UUID.fromString(helpRequest.helpSeeker))
+
+        if (helpSeeker.isEmpty) {
+            return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build())
+        }
+
         val adminUser = authentication.getUser()
-        val entity = toHelpRequestEntity(helpRequest, adminUser)
+        val entity = toHelpRequestEntity(helpRequest, adminUser, helpSeeker.get())
         val helpRequestEntity = this.helpRequestRepository.save(entity)
         val resource = toHelpRequestResource(helpRequestEntity)
 

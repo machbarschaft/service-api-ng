@@ -10,5 +10,6 @@ class HelpRequestResource (
     val updatedAt: LocalDateTime,
     val requestStatus: RequestStatus,
     val requestText: String,
-    val adminUser: UserResource
+    val adminUser: UserResource,
+    val helpSeeker: HelpSeekerResource
 )

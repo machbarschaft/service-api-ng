@@ -23,7 +23,11 @@ data class HelpRequestEntity(
 
         @ManyToOne(optional = false, fetch = FetchType.EAGER)
         @JoinColumn(name = "admin_user_id")
-        var adminUser: UserEntity
+        var adminUser: UserEntity,
+
+        @ManyToOne(optional = false, fetch = FetchType.EAGER)
+        @JoinColumn(name = "help_seeker_id")
+        var helpSeeker: HelpSeekerEntity
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

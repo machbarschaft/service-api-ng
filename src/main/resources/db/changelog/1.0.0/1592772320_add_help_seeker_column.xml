@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="ahodes" id="add_help_seeker_column">
+        <sql>
+            DELETE FROM help_request;
+        </sql>
+        <addColumn tableName="help_request">
+            <column name="help_seeker_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_159279190" referencedTableName="help_seeker" referencedColumnNames="id" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

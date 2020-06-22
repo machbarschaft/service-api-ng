@@ -1,15 +1,17 @@
 package com.colivery.serviceaping.mapping
 
 import com.colivery.serviceaping.persistence.entity.HelpRequestEntity
+import com.colivery.serviceaping.persistence.entity.HelpSeekerEntity
 import com.colivery.serviceaping.persistence.entity.UserEntity
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.CreateHelpRequestDto
 import com.colivery.serviceaping.rest.v1.resources.HelpRequestResource
 
-fun toHelpRequestEntity(helpRequest: CreateHelpRequestDto, adminUser: UserEntity) =
+fun toHelpRequestEntity(helpRequest: CreateHelpRequestDto, adminUser: UserEntity, helpSeeker: HelpSeekerEntity) =
         HelpRequestEntity(
                 requestText = helpRequest.requestText,
                 requestStatus = helpRequest.requestStatus,
-                adminUser = adminUser
+                adminUser = adminUser,
+                helpSeeker = helpSeeker
         )
 
 fun toHelpRequestResource(helpRequest: HelpRequestEntity) =
@@ -19,5 +21,6 @@ fun toHelpRequestResource(helpRequest: HelpRequestEntity) =
                 updatedAt =  helpRequest.updatedAt,
                 requestStatus =  helpRequest.requestStatus,
                 requestText =  helpRequest.requestText,
-                adminUser =  toUserResource(helpRequest.adminUser)
+                adminUser =  toUserResource(helpRequest.adminUser),
+                helpSeeker =  toHelpSeekerResource(helpRequest.helpSeeker)
         )
