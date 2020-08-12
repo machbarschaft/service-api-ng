@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="ahodes" id="add_admin_user">
+        <sql>UPDATE public.user SET role = 'ADMIN' where email = 'hallo@machbarschaft.jetzt'</sql>
+    </changeSet>
+</databaseChangeLog>
