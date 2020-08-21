@@ -7,7 +7,6 @@ import com.colivery.serviceaping.rest.v1.dto.user.PatchUserAdminDto
 import com.colivery.serviceaping.rest.v1.resources.UserResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.RequestEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.security.access.prepost.PreAuthorize
@@ -27,7 +26,7 @@ class AdminRestService(private val userRepository: UserRepository) {
         val user = userRepository.findByEmail(email)
                 ?: return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build())
 
-        user.role = UserEntity.Role.ADMIN;
+        user.role = UserEntity.Role.ADMIN
         val savedUser = userRepository.save(user)
 
         return Mono.just(ResponseEntity.ok(toUserResource(savedUser)))
