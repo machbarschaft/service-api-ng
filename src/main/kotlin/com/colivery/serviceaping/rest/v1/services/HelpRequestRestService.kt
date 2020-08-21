@@ -12,7 +12,6 @@ import com.colivery.serviceaping.rest.v1.resources.HelpRequestResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -24,7 +23,6 @@ import java.time.LocalDateTime
 import java.util.*
 
 @RestController
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 @Validated
 @RequestMapping("/v1/help-request", produces = [MediaType.APPLICATION_JSON_VALUE])
 class HelpRequestRestService(
