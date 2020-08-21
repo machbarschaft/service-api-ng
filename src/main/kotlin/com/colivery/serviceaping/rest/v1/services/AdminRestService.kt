@@ -22,14 +22,14 @@ import javax.validation.Valid
 class AdminRestService(private val userRepository: UserRepository) {
 
     @PutMapping("/users/{email}")
-    fun updateUserToAdmin(@PathVariable email: String): Mono<ResponseEntity<UserResource>> {
+    fun updateUserToAdmin(@PathVariable email: String): Mono<ResponseEntity<String>> {
         val user = userRepository.findByEmail(email)
                 ?: return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build())
 
         user.role = UserEntity.Role.ADMIN
-        val savedUser = userRepository.save(user)
+        userRepository.save(user)
 
-        return Mono.just(ResponseEntity.ok(toUserResource(savedUser)))
+        return Mono.just(ResponseEntity.status(HttpStatus.OK).build())
     }
 
     @PatchMapping("/users/{userId}")
