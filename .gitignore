@@ -13,6 +13,7 @@ build/
 .settings
 .springBeans
 .sts4-cache
+.java-version
 
 ### IntelliJ IDEA ###
 .idea
@@ -37,3 +38,6 @@ application-development.properties
 util/
 
 serviceAccountCredentials.json
+adminsdk.json
+
+run.sh
