@@ -26,20 +26,20 @@ data class UserEntity(
         @Column(nullable = true)
         var streetNo: String?,
 
-        @Column(nullable = false)
-        var zipCode: String,
+        @Column(nullable = true)
+        var zipCode: String?,
 
-        @Column(nullable = false)
-        var city: String,
+        @Column(nullable = true)
+        var city: String?,
 
         @Column(nullable = true)
         var email: String?,
 
-        @Column(nullable = false)
-        var location: Point,
+        @Column(nullable = true)
+        var location: Point?,
 
-        @Column(nullable = false)
-        var locationGeoHash: String,
+        @Column(nullable = true)
+        var locationGeoHash: String?,
 
         @Column(nullable = false)
         var phone: String,

@@ -6,9 +6,9 @@ import java.util.*
 data class AnonymizedUserResource(
         val id: UUID?,
         val firstName: String?,
-        val zipCode: String,
-        val city: String,
-        val locationGeoHash: String,
-        val centerOfLocationGeoHash: GeoPointResource,
+        val zipCode: String?,
+        val city: String?,
+        val locationGeoHash: String?,
+        val centerOfLocationGeoHash: GeoPointResource?,
         val source: Source
 )

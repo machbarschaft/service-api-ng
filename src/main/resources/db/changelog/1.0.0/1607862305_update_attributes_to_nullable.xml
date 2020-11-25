@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="ahodes" id="update_attributes_to_nullable">
+        <dropNotNullConstraint tableName="user" columnName="zip_code"/>
+        <dropNotNullConstraint tableName="user" columnName="city"/>
+        <dropNotNullConstraint tableName="user" columnName="location"/>
+        <dropNotNullConstraint tableName="user" columnName="location_geo_hash"/>
+    </changeSet>
+</databaseChangeLog>
