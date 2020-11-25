@@ -159,8 +159,8 @@ class UserRestService(
                     city = createUserDto.city,
                     email = createUserDto.email,
                     firebaseUid = firebaseToken.uid,
-                    location = createUserDto.location.toGeoPoint(this.geometryFactory),
-                    locationGeoHash = encodeGeoHash(createUserDto.location),
+                    location = createUserDto.location?.toGeoPoint(this.geometryFactory),
+                    locationGeoHash = createUserDto.location?.let { encodeGeoHash(it) },
                     phone = createUserDto.phone,
                     source = createUserDto.source
             ))
