@@ -4,7 +4,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet author="ahodes" id="add_admin_user">
-        <sql>UPDATE public.user SET role = 'ADMIN' where email = 'kontakt@machbarschaft.jetzt'</sql>
+    <changeSet author="wirths" id="add_admin_user">
+        <sql>INSERT INTO public.user (first_name, last_name, email, phone, created_at, updated_at, role) VALUES ('Super', 'Admin', 'admin@machbarschaft.jetzt', '911', '2020-12-06 12:12:12','2020-12-06 12:12:12', 'ADMIN');</sql>
     </changeSet>
 </databaseChangeLog>
