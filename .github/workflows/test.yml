@@ -40,7 +40,7 @@ jobs:
           gcloud run deploy machbarschaft-api-sta \
             --image gcr.io/${PROJECT_ID_STA}/machbarschaft-api:develop \
             --set-env-vars ^:^google_maps_api_key=$google_maps_api_key \
-            --region europe-west3 \
+            --region europe-west1 \
             --platform managed
         env:
           google_maps_api_key: ${{ secrets.google_maps_api_key }}
