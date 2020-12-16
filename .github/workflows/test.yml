@@ -35,11 +35,10 @@ jobs:
       - name: Cloud Run Deployment
         run: |
           touch empty.ignore
-          export SERVICE_NAME=machbarschaft-api
           gcloud config set project ${PROJECT_ID_STA}
-          gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID_STA}/${SERVICE_NAME}:develop
-          gcloud run deploy ${SERVICE_NAME}-sta \
-            --image gcr.io/${PROJECT_ID_STA}/{SERVICE_NAME}:develop \
+          gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID_STA}/machbarschaft-api:develop
+          gcloud run deploy machbarschaft-api-sta \
+            --image gcr.io/${PROJECT_ID_STA}/machbarschaft-api:develop \
             --set-env-vars ^:^google_maps_api_key=$google_maps_api_key \
             --region europe-west3 \
             --platform managed
