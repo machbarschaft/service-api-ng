@@ -6,6 +6,10 @@ variable "project_id_sta" {}
 
 variable "project_id_prd" {}
 
+variable "adminsdk_username" {}
+
+variable "key_name" {}
+
 variable "region" {
   default  = "europe-west3"
 }
