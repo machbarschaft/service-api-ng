@@ -38,11 +38,13 @@ jobs:
       - name: Cloud Run Deployment
         run: |
           touch empty.ignore
+          gsutil cp gs://machy-testbert/mbs-sta-298714-0c213ab53fc9.json sdk.json
           gcloud config set project ${PROJECT_ID_STA}
           gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID_STA}/machbarschaft-api:develop
           gcloud run deploy machbarschaft-api-sta \
             --image gcr.io/${PROJECT_ID_STA}/machbarschaft-api:develop \
             --update-env-vars google_maps_api_key=$google_maps_api_key \
+            --update-env-vars FIREBASE_CREDENTIALS_PATH="./sdk.json" \
             --region europe-west1 \
             --platform managed
         env:
