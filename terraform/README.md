@@ -48,3 +48,5 @@ The current firebase implementation by GCP and/or Terraform is far from stable. 
 - Cloud DNS must be set up - we did this into another project, which allows us to manipulate DNS entries but keep the project longer than the ones holding the respective objects.
 - [https://www.google.com/webmasters/verification/home](https://www.google.com/webmasters/verification/home) add email address of terraform user
 - Add CNAME records for every subdomain in form `CNAME SUBDOMAIN ghs.googlehosted.com`
+- Set secret PROJECT_ID_STA in GitHub
+- Set secret GCLOUD_AUTH_STA in GitHub

@@ -93,10 +93,9 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   policy_data = data.google_iam_policy.noauth.policy_data
 }
 
-
 resource "google_cloud_run_domain_mapping" "default" {
   location = var.region_run
-  name     = "${local.env == "prd" ? "api" : "api-sta"}.${trimsuffix(data.google_dns_managed_zone.api.dns_name, ".")}"
+  name     = "${local.env == "prd" ? "api" : "api-sta"}.${local.tld_naked}"
 
   metadata {
     namespace = local.project_id
