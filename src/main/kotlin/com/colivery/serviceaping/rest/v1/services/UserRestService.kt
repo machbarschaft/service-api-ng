@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -113,8 +114,15 @@ class UserRestService(
         this.userRepository.delete(user)
     }
 
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ROLE_HOTLINE')")
+    fun searchUser(@RequestParam phoneNumber: String): Mono<UserResource> =
+            Mono.justOrEmpty(this.userRepository.findByPhone(phoneNumber)?.let {
+                toUserResource(it)
+            })
+
     @PostMapping
-    fun createUser(@Valid @RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
+    fun createUser(@RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
             ResponseEntity<Mono<UserResource>> {
         val unauthorized = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .build<Mono<UserResource>>()
@@ -151,8 +159,8 @@ class UserRestService(
                     city = createUserDto.city,
                     email = createUserDto.email,
                     firebaseUid = firebaseToken.uid,
-                    location = createUserDto.location.toGeoPoint(this.geometryFactory),
-                    locationGeoHash = encodeGeoHash(createUserDto.location),
+                    location = createUserDto.location?.toGeoPoint(this.geometryFactory),
+                    locationGeoHash = createUserDto.location?.let { encodeGeoHash(it) },
                     phone = createUserDto.phone,
                     source = createUserDto.source
             ))

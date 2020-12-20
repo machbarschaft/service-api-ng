@@ -11,6 +11,6 @@ fun toAnonymizedUserResource(user: UserEntity) =
                 zipCode = user.zipCode,
                 city = user.city,
                 locationGeoHash = user.locationGeoHash,
-                centerOfLocationGeoHash = decodeGeoHash(user.locationGeoHash),
+                centerOfLocationGeoHash = user.locationGeoHash?.let { decodeGeoHash(it) },
                 source = user.source
         )

@@ -11,22 +11,17 @@ import javax.validation.constraints.NotNull
 @Validated
 data class CreateUserDto(
         @field:NotEmpty(groups = [App::class])
-        val firstName: String,
+        val firstName: String?,
         @field:NotEmpty(groups = [App::class])
-        val lastName: String,
-        @field:NotEmpty(groups = [App::class])
-        val street: String,
-        @field:NotEmpty(groups = [App::class])
-        val streetNo: String,
-        @field:NotEmpty
-        val zipCode: String,
-        @field:NotEmpty
-        val city: String,
+        val lastName: String?,
+        val street: String?,
+        val streetNo: String?,
+        val zipCode: String?,
+        val city: String?,
         @field:NotEmpty(groups = [App::class])
         @field:Email(groups = [App::class])
-        val email: String,
-        @field:NotNull
-        val location: GeoPointResource,
+        val email: String?,
+        val location: GeoPointResource?,
         @field:NotEmpty
         val phone: String,
         @field:NotNull

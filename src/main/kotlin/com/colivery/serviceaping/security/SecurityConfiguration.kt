@@ -21,8 +21,8 @@ import org.springframework.web.cors.CorsConfiguration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 class SecurityConfiguration(
-        @Value("\${colivery.frontend.url}")
-        private val frontendUrl: String
+        @Value("\${colivery.security.allowedOrigins}")
+        private val corsAllowedOrigins: Array<String>
 ) {
 
     @Bean
@@ -44,7 +44,9 @@ class SecurityConfiguration(
                     .and().csrf().disable()
                     .cors().configurationSource {
                         val corsConfig = CorsConfiguration()
-                        corsConfig.allowedOrigins = listOf(this.frontendUrl)
+                        // note: allowed origins have to be declared without / at the end
+//                        corsConfig.allowedOrigins = this.corsAllowedOrigins.toList()
+                        corsConfig.allowedOrigins = listOf("https://ds.machbarschaft.jetzt","https://ds-sta.machbarschaft.jetzt")
                         corsConfig.allowedHeaders = listOf("*")
                         corsConfig.allowedMethods = listOf("*")
 

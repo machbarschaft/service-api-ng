@@ -5,6 +5,11 @@ build/
 !**/src/main/**
 !**/src/test/**
 
+### Terraform ###
+.terraform*
+terraform.tfstate.d/
+secrets.auto.tfvars
+
 ### STS ###
 .apt_generated
 .classpath
@@ -13,6 +18,7 @@ build/
 .settings
 .springBeans
 .sts4-cache
+.java-version
 
 ### IntelliJ IDEA ###
 .idea
@@ -35,3 +41,8 @@ application-dev.properties
 application-development.properties
 
 util/
+
+serviceAccountCredentials.json
+adminsdk.json
+
+run.sh
