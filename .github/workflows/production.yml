@@ -6,7 +6,8 @@ name: CI/CD Production
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - 'master'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,7 +21,8 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-java@v1
+      - name: Java Setup
+        uses: actions/setup-java@v1
         with:
           java-version: 11
 
@@ -30,21 +32,22 @@ jobs:
           arguments: clean assemble
 
       - name: Prepare Cloud Build
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@master
         with:
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          service_account_key: ${{ secrets.GCLOUD_AUTH_PRD }}
 
       - name: Cloud Run Deployment
         run: |
           touch empty.ignore
-          gcloud config set project model-link-272316
-          gcloud builds submit --ignore-file=empty.ignore --tag gcr.io/model-link-272316/colivery-api-ng:stable
-          gcloud run deploy service-api-ng-production \
-            --image gcr.io/model-link-272316/colivery-api-ng:stable \
-            --concurrency=default \
-            --memory=512Mi \
-            --set-env-vars=MaxRAM=512m,profiles_active=cloudsql,database_password=$database_password,database_name=production \
-            --region=europe-west1 \
-            --platform=managed
+          gsutil cp gs://keystorage-${PROJECT_ID_PRD}/credentials.json credentials.json
+          gcloud config set project ${PROJECT_ID_PRD}
+          gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID_PRD}/machbarschaft-api:stable
+          gcloud run deploy machbarschaft-api-sta \
+            --image gcr.io/${PROJECT_ID_PRD}/machbarschaft-api:stable \
+            --update-env-vars google_maps_api_key=$google_maps_api_key \
+            --region europe-west1 \
+            --platform managed
         env:
-          database_password: ${{ secrets.DEVELOP_DB_PASSWORD }}
+          google_maps_api_key: ${{ secrets.google_maps_api_key }}
+          PROJECT_ID_PRD: ${{ secrets.PROJECT_ID_PRD }}
+
