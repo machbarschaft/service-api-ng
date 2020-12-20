@@ -5,7 +5,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet author="fbrueck" id="introduce_source_type">
+    <changeSet author="fbrueck" id="introduce_source_type" context="baseline">
         <addColumn tableName="user">
             <column name="source" type="varchar(16)" defaultValue="APP">
                 <constraints nullable="false"/>
