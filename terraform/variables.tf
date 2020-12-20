@@ -15,14 +15,6 @@ variable "project_id_prd" {
   type        = string
   description = "Production project ID"
 }
-variable "adminsdk_username" {
-  type        = string
-  description = "Username of SDK user - part of the email in front of @"
-}
-variable "key_name" {
-  type        = string
-  description = "ID of the key file"
-}
 
 # terraform.tfvars - not so secret
 variable "region" {

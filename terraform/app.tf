@@ -15,7 +15,6 @@ resource "google_app_engine_application" "dashboard" {
 resource "google_app_engine_domain_mapping" "domain_mapping" {
   domain_name       = "${local.env == "prd" ? "ds" : "ds-sta"}.${local.tld_naked}"
 
-  # DomainOverrideStrategy.OVERRIDE
   override_strategy = "OVERRIDE"
 
   ssl_settings {
