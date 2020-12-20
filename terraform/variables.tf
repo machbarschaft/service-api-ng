@@ -1,6 +1,6 @@
 # secrets.auto.tfvars - name is intentional ;-)
 variable "org_id" {
-  type        = numer
+  type        = number
   description = "GCP ID of the organization. A required information for some resources."
 }
 variable "billing_account" {
@@ -46,7 +46,7 @@ variable "location_long" {
 locals {
   env         = terraform.workspace
 
-  tld_naked   = "${trimsuffix(data.google_dns_managed_zone.api.dns_name, ".")}"
+  tld_naked   = trimsuffix(data.google_dns_managed_zone.api.dns_name, ".")
 
   # terraform workspace aware vars - just use workspaces without var headaches
   project_ids = {

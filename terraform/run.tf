@@ -16,7 +16,7 @@ resource "google_cloud_run_service" "machbarschaft" {
         image = "gcr.io/${local.project_id}/machbarschaft-api:develop"
         env {
           name  = "profiles_active"
-          value = local.env == "prd" ? "cloudsql,prd" : "cloudsql,sta"
+          value = local.env == "prd" ? "cloudsql,prd,sdk" : "cloudsql,sta,sdk"
         }
         env {
           name  = "database_instance_connection_name"
@@ -38,14 +38,6 @@ resource "google_cloud_run_service" "machbarschaft" {
         env {
           name  = "FIREBASE_PROJECT_ID"
           value = local.project_id
-        }
-        env {
-          name  = "FIREBASE_DATABASE_URL"
-          value = lookup(data.google_firebase_web_app_config.dashboard, "database_url", "")
-        }
-        env {
-          name  = "FIREBASE_CREDENTIALS_PATH"
-          value = ""
         }
         resources {
           limits = {
@@ -105,7 +97,8 @@ resource "google_cloud_run_domain_mapping" "default" {
   }
 
   spec {
-    route_name = google_cloud_run_service.machbarschaft.name
+    route_name     = google_cloud_run_service.machbarschaft.name
+    force_override = true
   }
 }
 

@@ -6,6 +6,9 @@
 0. You must have terraform installed.
 1. Create a project in GCP console. It must be assigned to an organization and billing account. In our case the organization is 'machbarschaft.jetzt'
 2. Assign the role 'Owner' to `terraform@terraform-admin-machbarschaft.iam.gserviceaccount.com`
+3. Add Identity Provider email and switch templates to German.
+4. Enhance existing domain list with API, dashboard and app domain.
+5. Create an initial admin account and modify firebase UID in database XML file 
 
 ## Prepare Initial Cloud Build
 
