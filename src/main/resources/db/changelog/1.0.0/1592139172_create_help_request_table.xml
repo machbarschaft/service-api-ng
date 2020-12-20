@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+<changeSet author="nschoellhorn" id="create_help_request_table" context="baseline">
+    <sql dbms="postgresql">
+            CREATE TYPE request_status AS ENUM ('OPEN', 'WIP', 'CLOSED');
+    </sql>
+    <createTable tableName="help_request">
+        <column name="id" type="UUID" defaultValueComputed="${uuid_function}">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+        <column name="request_text" type="text">
+            <constraints nullable="false"/>
+        </column>
+        <column name="created_at" type="datetime" defaultValueComputed="now()">
+            <constraints nullable="false"/>
+        </column>
+        <column name="updated_at" type="datetime" defaultValueComputed="now()">
+            <constraints nullable="false"/>
+        </column>
+        <column name="status" type="request_status" defaultValue="OPEN">
+            <constraints nullable="false"/>
+        </column>
+        <column name="admin_user_id" type="UUID">
+            <constraints nullable="false" foreignKeyName="fk_1592140122" referencedTableName="user" referencedColumnNames="id"/>
+        </column>
+    </createTable>
+</changeSet>
+</databaseChangeLog>
