@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-<changeSet id="create_help_seeker_table" author="nschoellhorn">
+<changeSet id="create_help_seeker_table" author="nschoellhorn" context="baseline">
     <sql dbms="postgresql">
         CREATE TYPE source_platform AS ENUM ('HOTLINE', 'ADMIN');
     </sql>

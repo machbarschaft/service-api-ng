@@ -5,6 +5,11 @@ build/
 !**/src/main/**
 !**/src/test/**
 
+### Terraform ###
+.terraform*
+terraform.tfstate.d/
+secrets.auto.tfvars
+
 ### STS ###
 .apt_generated
 .classpath
