@@ -20,10 +20,14 @@ The preparation of the initial cloud build avoids the failure of cloud run servi
 3. Set the gcloud project by running `gcloud config set project ${PROJECT_ID}`
 4. Enable the GCP cloud build service `gcloud services enable cloudbuild.googleapis.com`
 5. Build the project with `./gradlew clean assemble`
-6. Run the commands as follows to submit a build job to Cloud Build:
+6. Create an empty file, which could be deleted after the last step: `touch credentials.json`
+7. Run the commands as follows to submit a build job to Cloud Build:
 ```bash
 touch empty.ignore
+# for 'sta' - staging environment
 gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID}/machbarschaft-api:develop
+# for 'prd' - production environment
+gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID}/machbarschaft-api:stable
 ```
 
 ## IAC - Build Your Environment
@@ -50,6 +54,6 @@ The current firebase implementation by GCP and/or Terraform is far from stable. 
 
 - Cloud DNS must be set up - we did this into another project, which allows us to manipulate DNS entries but keep the project longer than the ones holding the respective objects.
 - [https://www.google.com/webmasters/verification/home](https://www.google.com/webmasters/verification/home) add email address of terraform user
-- Add CNAME records for every subdomain in form `CNAME SUBDOMAIN ghs.googlehosted.com`
-- Set secret PROJECT_ID_STA in GitHub
-- Set secret GCLOUD_AUTH_STA in GitHub
+- Add CNAME records for every subdomain in form `CNAME SUBDOMAIN ghs.googlehosted.com` - we need to check if this is still required after moving name server to GCP.
+- Set secret PROJECT_ID_STA / PROJECT_ID_PRD in GitHub.
+- Set secret GCLOUD_AUTH in GitHub - we utilize TF user currently, which must be replaced by another user with less permissions / roles.

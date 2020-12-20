@@ -14,7 +14,6 @@ resource "google_sql_database_instance" "master" {
     tier = local.sql_instance_size
 
     backup_configuration {
-      binary_log_enabled = local.env == "prd" ? true : false
       enabled            = local.env == "prd" ? true : false
     }
   }
