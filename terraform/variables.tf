@@ -51,7 +51,7 @@ locals {
   sql_instance_sizes = {
     default = "db-f1-micro"
     sta     = "db-f1-micro"
-    prd     = "db-n1-standard-1"
+    prd     = "db-g1-small"
   }
   sql_instance_size  = local.sql_instance_sizes[local.env]
 }

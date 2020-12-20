@@ -13,7 +13,7 @@ resource "google_cloud_run_service" "machbarschaft" {
     spec {
       containers {
         # We must build this image in advance otherwise the service fails
-        image = "gcr.io/${local.project_id}/machbarschaft-api:develop"
+        image = "gcr.io/${local.project_id}/machbarschaft-api:${local.env == "prd" ? "stable": "develop"}"
         env {
           name  = "profiles_active"
           value = local.env == "prd" ? "cloudsql,prd,sdk" : "cloudsql,sta,sdk"
