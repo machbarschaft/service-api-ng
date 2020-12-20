@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="wirths" id="add_admin_user" context="sta">
+        <sql>
+            INSERT INTO public.user 
+                (first_name, last_name, email, phone, created_at, updated_at, role, firebase_uid) 
+                VALUES ('Super Sta', 'Admin', 'admin-prd@machbarschaft.jetzt', '0815', '2020-12-12', '2020-12-12', 'ADMIN', '7iiza0mh3fZXZNoHrwrsvgq6FrC2');
+        </sql>
+    </changeSet>
+</databaseChangeLog>
