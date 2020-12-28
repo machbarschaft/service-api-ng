@@ -46,7 +46,14 @@ class SecurityConfiguration(
                         val corsConfig = CorsConfiguration()
                         // note: allowed origins have to be declared without / at the end
 //                        corsConfig.allowedOrigins = this.corsAllowedOrigins.toList()
-                        corsConfig.allowedOrigins = listOf("https://ds.machbarschaft.jetzt","https://ds-sta.machbarschaft.jetzt")
+                        corsConfig.allowedOrigins = listOf(
+                                "https://app.machbarschaft.jetzt",
+                                "https://ds.machbarschaft.jetzt",
+                                "https://app-sta.machbarschaft.jetzt",
+                                "https://ds-sta.machbarschaft.jetzt",
+                                "https://app-test.machbarschaft.jetzt",
+                                "https://ds-test.machbarschaft.jetzt"
+                                )
                         corsConfig.allowedHeaders = listOf("*")
                         corsConfig.allowedMethods = listOf("*")
 
