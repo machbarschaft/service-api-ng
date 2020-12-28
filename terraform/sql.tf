@@ -5,16 +5,16 @@ resource "google_project_service" "sqladmin" {
 }
 
 resource "google_sql_database_instance" "master" {
-  name             = "${local.project_id}-${random_id.id.hex}"
-  database_version = "POSTGRES_11"
-  project          = local.project_id
-  region           = var.region
+  name               = "${local.project_id}-${random_id.id.hex}"
+  database_version   = "POSTGRES_11"
+  project            = local.project_id
+  region             = var.region
 
   settings {
-    tier = local.sql_instance_size
+    tier              = local.sql_instance_size
 
     backup_configuration {
-      enabled            = local.env == "prd" ? true : false
+      enabled         = local.env == "prd" ? true : false
     }
   }
 
@@ -30,8 +30,8 @@ resource "google_sql_database" "database" {
 }
 
 resource "random_password" "password" {
-  length = 49
-  special = true
+  length           = 49
+  special          = true
   override_special = "_%@"
 }
 
@@ -54,8 +54,4 @@ output "sql_database_name" {
 
 output "sql_user_name" {
   value = google_sql_user.user.name
-}
-
-output "sql_user_password" {
-  value = google_sql_user.user.password
 }
