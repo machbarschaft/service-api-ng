@@ -7,6 +7,10 @@ variable "billing_account" {
   type        = string
   description = "String ID for the GCP billing account"
 }
+variable "project_id_test" {
+  type        = string
+  description = "Test project ID"
+}
 variable "project_id_sta" {
   type        = string
   description = "Staging project ID"
@@ -42,7 +46,7 @@ locals {
 
   # terraform workspace aware vars - just use workspaces without var headaches
   project_ids = {
-    default = "defaulty"
+    default = var.project_id_test
     sta     = var.project_id_sta
     prd     = var.project_id_prd
   }
@@ -54,4 +58,25 @@ locals {
     prd     = "db-g1-small"
   }
   sql_instance_size  = local.sql_instance_sizes[local.env]
+
+  subdomain_apis = {
+    default = "api-test"
+    sta     = "api-sta"
+    prd     = "api"
+  }
+  subdomain_api = local.subdomain_apis[local.env]
+  
+  subdomain_dashboards = {
+    default = "ds-test"
+    sta     = "ds-sta"
+    prd     = "ds"
+  }
+  subdomain_dashboard = local.subdomain_dashboards[local.env]
+
+  subdomain_webapps = {
+    default = "app-test"
+    sta     = "app-sta"
+    prd     = "app"
+  }
+  subdomain_webapp = local.subdomain_webapps[local.env]
 }
