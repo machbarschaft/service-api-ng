@@ -24,7 +24,7 @@ class AdminRestService(private val userRepository: UserRepository) {
     @PutMapping("/users/{email}")
     fun updateUserToAdmin(@PathVariable email: String): Mono<ResponseEntity<String>> {
         val user = userRepository.findByEmail(email)
-                ?: return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build())
+                ?: return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body("user $email does not exist"))
 
         user.role = UserEntity.Role.ADMIN
         userRepository.save(user)
