@@ -1,5 +1,7 @@
 # Colivery Service API
 
+## Prerequisites
+Please check if you have [Docker](https://docs.docker.com/engine/install/), [Docker Compose](https://docs.docker.com/compose/install/) and [Java 11](https://adoptopenjdk.net/installation.html) or same other version installed. [PGAdmin](https://www.pgadmin.org) is optional but quite helpful.
 ## Get started
 
 1. Checkout the current version from GitHub
@@ -18,6 +20,12 @@ liquibase.contexts               =baseline non-prd sta
 # logging.level.root              =DEBUG
 ```
 7. Start the database, which is a dockerized version of PostgreSQL by running `docker-compose up -d` - assuming that you have Docker and Docker Compose installed.
-
-**Running the application from command line**
-8. St
+8. Start the application by running these commands
+```bash
+# Builds the application with gradle
+./gradlew clean assemble
+# Runs the generated jar
+java -jar -Dspring.profiles.active=dev,localdb,google_maps_api build/libs/service-api-ng-0.0.1-SNAPSHOT.jar
+```
+9. Test if everything is up and running by opening this URL [http://localhost:8080/v2/api-docs](http://localhost:8080/v2/api-docs) in a browser
+10. A connection to the database could be established via host `localhost`, port `5432` and the database name `colivery`
