@@ -6,13 +6,18 @@
 0. You must have terraform installed.
 1. Create a project in GCP console. It must be assigned to an organization and billing account. In our case the organization is 'machbarschaft.jetzt'
 2. Assign the role 'Owner' to `terraform@terraform-admin-machbarschaft.iam.gserviceaccount.com`
-3. Add Identity Provider email and switch templates to German.
-4. Enhance existing domain list with API, dashboard and app domain.
-5. Create an initial admin account and modify firebase UID in database XML file 
+3. Enable Identity Platform in GCP.
+4. Add Identity Provider email, disable passwordless login and switch templates to German.
+5. Enhance existing domain list with API, dashboard and app domain based on the environment.
+6. Create an initial admin account and modify firebase UID in database XML file 
+7. Copy project ID and apiKey from appplication setup details
+8. Set or replace project ID in terraforms secrets.auto.tfvars and in GitHub on organization level: PROJECT_ID_XXX
+9. Set or replace apiKey in GitHub on organization level: MAPS_API_KEY_XXX and FIREBASE_API_KEY_XXX
 
-## Prepare Initial Cloud Build
 
-The preparation of the initial cloud build avoids the failure of cloud run service in the consecutiove step.
+## Prepare Initial Cloud Build (optional)
+
+The preparation of the initial cloud build avoids the failure of cloud run service in the consecutiove step, which does not do any harm but provides possibly an unpleasant feeling.
 
 0. You must have GCP gcloud tools installed.
 1. Login to GCP by running `gcloud auth login`
@@ -30,6 +35,7 @@ gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID}/machb
 gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID}/machbarschaft-api:stable
 ```
 
+
 ## IAC - Build Your Environment
 
 0. Change into the terraform directory
@@ -44,11 +50,13 @@ export GOOGLE_PROJECT=${TF_ADMIN}
 2. Set the workspace - `sta` or `prd`, which should be used, e.g. `terraform workspace select sta`
 3. Run terraform with `terraform plan` followed by `terraform apply`
 
+
 ## General Remarks
 
 The current firebase implementation by GCP and/or Terraform is far from stable. E.g. if you run `terraform destroy` it keeps the firebase project and related web apps alive but marks them in terraform state as deleted. Running `terraform apply` in the same projects fails due to existing objects. This could be healed by performing the mentioned import commands:
 - `terraform import google_firebase_project.dashboard projects/PROJECT_ID`
 - `terraform import google_firebase_web_app.dashboard projects/PROJECT_ID/webApps/APP_ID`
+
 
 ## Manual Steps
 
