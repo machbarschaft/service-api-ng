@@ -1,6 +1,7 @@
 package com.colivery.serviceaping.rest.v1.resources
 
 import com.colivery.serviceaping.persistence.Source
+import com.colivery.serviceaping.persistence.entity.UserEntity
 import java.time.LocalDateTime
 import java.util.*
 
@@ -16,6 +17,7 @@ data class UserResource(
         val location: GeoPointResource?,
         val locationGeoHash: String?,
         val phone: String,
+        val role: UserEntity.Role,
         val createdAt: LocalDateTime,
         val updatedAt: LocalDateTime,
         val source: Source
