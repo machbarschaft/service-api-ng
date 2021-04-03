@@ -28,17 +28,17 @@ jobs:
           arguments: clean assemble
 
 
-  release:
-    name: Release
-    needs: main
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+  #release:
+  #  name: Release
+  #  needs: main
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v2
 
-      - run: npm ci
+  #    - run: npm ci
 
-      - if: github.ref == 'refs/heads/master'
-        run: npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release semantic-release
+  #    - if: github.ref == 'refs/heads/master'
+  #      run: npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release semantic-release
 
 
   deploy:
@@ -47,6 +47,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Java Setup
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Gradle Build
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean assemble
 
       - name: Prepare Cloud Build
         uses: google-github-actions/setup-gcloud@master
