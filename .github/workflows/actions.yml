@@ -1,14 +1,13 @@
-name: CI/CD Staging
+name: CI/CD Actions
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+
 on:
   push:
     branches:    
       - '**'
       - '!master'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
 jobs:
   
   main:
@@ -65,25 +64,26 @@ jobs:
 
       - name: Cloud Run Deployment
         run: |
-          gcloud config set project ${PROJECT_ID_STA}
+          gcloud config set project ${PROJECT_ID}
 
           touch empty.ignore
-          gsutil cp gs://keystorage-${PROJECT_ID_STA}/credentials.json credentials.json
+          gsutil cp gs://keystorage-${PROJECT_ID}/credentials.json credentials.json
           
-          gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID_STA}/machbarschaft-api:develop
+          gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID}/machbarschaft-api:${{ github.ref == 'refs/heads/master' && 'stable' || 'develop' }}
 
-          gcloud run deploy machbarschaft-api-sta \
-            --image gcr.io/${PROJECT_ID_STA}/machbarschaft-api:develop \
+          gcloud run deploy ${{ github.ref == 'refs/heads/master' && 'machbarschaft-api-prd' || 'machbarschaft-api-sta' }} \
+            --image gcr.io/${PROJECT_ID}/machbarschaft-api:${{ github.ref == 'refs/heads/master' && 'stable' || 'develop' }} \
             --update-env-vars google_maps_api_key=${MAPS_API_KEY} \
             --region europe-west1 \
             --platform managed
         env:
-          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY_STA }}
-          PROJECT_ID_STA: ${{ secrets.PROJECT_ID_STA }}
-          
+          MAPS_API_KEY: ${{ github.ref == 'refs/heads/master' && secrets.MAPS_API_KEY_PRD || secrets.MAPS_API_KEY_STA }}
+          PROJECT_ID: ${{ github.ref == 'refs/heads/master' && secrets.PROJECT_ID_PRD || secrets.PROJECT_ID_STA }}
+
 
   create-pr:
     name: Create PR
+    if: ${{ github.ref != 'refs/heads/master' }}
     needs: deploy
     runs-on: ubuntu-latest
     steps:
