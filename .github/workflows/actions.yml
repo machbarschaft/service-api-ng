@@ -1,7 +1,6 @@
 name: CI/CD Actions
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+
 on:
   push:
     branches:    
@@ -78,12 +77,9 @@ jobs:
             --region europe-west1 \
             --platform managed
         env:
-          #MAPS_API_KEY: ${{ secrets.MAPS_API_KEY_STA }}
-          #PROJECT_ID: ${{ secrets.PROJECT_ID_STA }}
           MAPS_API_KEY: ${{ github.ref == 'refs/heads/master' && secrets.MAPS_API_KEY_PRD || secrets.MAPS_API_KEY_STA }}
           PROJECT_ID: ${{ github.ref == 'refs/heads/master' && secrets.PROJECT_ID_PRD || secrets.PROJECT_ID_STA }}
 
-          
 
   create-pr:
     name: Create PR
