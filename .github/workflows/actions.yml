@@ -10,7 +10,7 @@ on:
 jobs:
   
   main:
-    name: Test & Build
+    name: Test & Assemble
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,7 +20,17 @@ jobs:
         with:
           java-version: 11
 
-      - name: Gradle Build
+      - name: Gradle Check
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean check
+
+      - name: Gradle Test
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean test
+
+      - name: Gradle Assemble
         uses: eskatos/gradle-command-action@v1
         with:
           arguments: clean assemble
@@ -51,7 +61,7 @@ jobs:
         with:
           java-version: 11
 
-      - name: Gradle Build
+      - name: Gradle Assemble
         uses: eskatos/gradle-command-action@v1
         with:
           arguments: clean assemble
