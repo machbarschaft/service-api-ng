@@ -1,3 +1,5 @@
+![GitHub actions workflow](https://github.com/machbarschaft/service-api-ng/actions/workflows/actions.yml/badge.svg)
+
 # Colivery Service API
 
 ## Prerequisites
@@ -29,3 +31,19 @@ java -jar -Dspring.profiles.active=dev,localdb,google_maps_api build/libs/servic
 ```
 9. Test if everything is up and running by opening this URL [http://localhost:8080/v2/api-docs](http://localhost:8080/v2/api-docs) in a browser
 10. A connection to the database could be established via host `localhost`, port `5432` and the database name `colivery`
+
+## Enable Firebase Authentication
+
+
+`Get started` (Los gehts)
+`Sign-in methods` ()
+`Sign-in providers` (Anbieter für Anmeldungen)
+`Email/Password` (E-Mail-Adresse/Passwort)
+`Enable` (Aktivieren)
+`Save` (Speichern)
+`Users` (Benutzer)
+`Add user` (Nutzer hinzufügen)
+
+`Email / Password` (E-Mail / Passwort)
+
+`User UID` (Nutzer-UID)
