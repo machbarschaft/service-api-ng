@@ -21,7 +21,7 @@ import javax.validation.Valid
 @RequestMapping("/v1/admin", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdminRestService(private val userRepository: UserRepository) {
 
-    @PutMapping("/users/{email}")
+    @PutMapping("/users/setadmin/{email}")
     fun updateUserToAdmin(@PathVariable email: String): Mono<ResponseEntity<String>> {
         val user = userRepository.findByEmail(email)
                 ?: return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body("user $email does not exist"))

@@ -1,0 +1,113 @@
+name: CI/CD Actions
+
+
+on:
+  push:
+    branches:    
+      - '**'
+
+
+jobs:
+  
+  main:
+    name: Test & Assemble
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Java Setup
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Gradle Check
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean check
+
+      - name: Gradle Test
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean test
+
+      - name: Gradle Assemble
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean assemble
+
+
+  #release:
+  #  name: Release
+  #  needs: main
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v2
+
+  #    - run: npm ci
+
+  #    - if: github.ref == 'refs/heads/master'
+  #      run: npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release semantic-release
+
+
+  deploy:
+    name: Deploy
+    needs: main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Java Setup
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Gradle Assemble
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean assemble
+
+      - name: Prepare Cloud Build
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+
+      - name: Cloud Run Deployment
+        run: |
+          gcloud config set project ${PROJECT_ID}
+
+          touch empty.ignore
+          gsutil cp gs://keystorage-${PROJECT_ID}/credentials.json credentials.json
+          
+          gcloud builds submit --ignore-file empty.ignore --tag gcr.io/${PROJECT_ID}/machbarschaft-api:${{ github.ref == 'refs/heads/master' && 'stable' || 'develop' }}
+
+          gcloud run deploy ${{ github.ref == 'refs/heads/master' && 'machbarschaft-api-prd' || 'machbarschaft-api-sta' }} \
+            --image gcr.io/${PROJECT_ID}/machbarschaft-api:${{ github.ref == 'refs/heads/master' && 'stable' || 'develop' }} \
+            --update-env-vars google_maps_api_key=${MAPS_API_KEY} \
+            --region europe-west1 \
+            --platform managed
+        env:
+          MAPS_API_KEY: ${{ github.ref == 'refs/heads/master' && secrets.MAPS_API_KEY_PRD || secrets.MAPS_API_KEY_STA }}
+          PROJECT_ID: ${{ github.ref == 'refs/heads/master' && secrets.PROJECT_ID_PRD || secrets.PROJECT_ID_STA }}
+
+
+  create-pr:
+    name: Create PR
+    if: ${{ github.ref != 'refs/heads/master' }}
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - if: ${{ github.ref != 'refs/heads/develop' }}
+        name: pull-request develop
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "develop"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: ${{ github.ref == 'refs/heads/develop' }}
+        name: pull-request master
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "master"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
