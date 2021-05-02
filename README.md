@@ -11,7 +11,7 @@ Please check if you have [Docker](https://docs.docker.com/engine/install/), [Doc
 3. In Firebase Console click on the cogwheel (left at the top) and select 'Project settings' (Projekteinstellungen) and within the screen on the tab 'Service accounts' (Dienstkonten).
 4. Create yourself a new private key and store this key in the root directory of your project (the one you checked out previously) in a file named 'adminsdk.json'
 5. Move to the tab 'General' (Allgemein) and copy the 'Project ID' (Projekt-ID) and 'Web API Key' (Web-API-Schlüssel)
-6. Create a file 'application-dev.properties' in the root of your project and replace data as follows:
+6. Create a file 'application-dev.properties' in the following directory of your project `src/main/resources` and replace data as follows:
 ```
 firebase.project.id              =Replace with your 'Project ID'
 google_maps_api_key              =Replace with your 'Web API Key'
