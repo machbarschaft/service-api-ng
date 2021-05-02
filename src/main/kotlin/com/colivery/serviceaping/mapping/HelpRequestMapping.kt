@@ -22,5 +22,6 @@ fun toHelpRequestResource(helpRequest: HelpRequestEntity) =
                 requestStatus =  helpRequest.requestStatus,
                 requestText =  helpRequest.requestText,
                 adminUser =  toUserResource(helpRequest.adminUser),
-                helpSeeker =  toHelpSeekerResource(helpRequest.helpSeeker)
+                helpSeeker =  toHelpSeekerResource(helpRequest.helpSeeker),
+                helper = toUserResourceNullable(helpRequest.helper)
         )

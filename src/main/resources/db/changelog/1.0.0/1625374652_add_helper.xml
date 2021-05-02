@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="ahodes" id="add_admin_user" context="baseline">
+        <addColumn tableName="help_request">
+            <column name="helper_id" type="UUID">
+                <constraints nullable="true" referencedTableName="user" referencedColumnNames="id"
+                             foreignKeyName="fk_helper_uid" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

@@ -22,3 +22,11 @@ fun toUserResource(user: UserEntity) =
                 updatedAt = user.updatedAt,
                 source = user.source
         )
+
+fun toUserResourceNullable(user: UserEntity? = null): UserResource? {
+        return if (user == null) {
+                null
+        } else {
+                toUserResource(user)
+        }
+}
