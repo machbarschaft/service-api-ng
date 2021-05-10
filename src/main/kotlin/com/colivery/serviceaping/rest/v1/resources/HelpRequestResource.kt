@@ -11,5 +11,6 @@ class HelpRequestResource (
     val requestStatus: RequestStatus,
     val requestText: String,
     val adminUser: UserResource,
-    val helpSeeker: HelpSeekerResource
+    val helpSeeker: HelpSeekerResource,
+    val helper: UserResource?
 )

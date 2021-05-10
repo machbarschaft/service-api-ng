@@ -1,3 +1,5 @@
+![GitHub actions workflow](https://github.com/machbarschaft/service-api-ng/actions/workflows/actions.yml/badge.svg)
+
 # Colivery Service API
 
 ## Prerequisites
@@ -9,7 +11,7 @@ Please check if you have [Docker](https://docs.docker.com/engine/install/), [Doc
 3. In Firebase Console click on the cogwheel (left at the top) and select 'Project settings' (Projekteinstellungen) and within the screen on the tab 'Service accounts' (Dienstkonten).
 4. Create yourself a new private key and store this key in the root directory of your project (the one you checked out previously) in a file named 'adminsdk.json'
 5. Move to the tab 'General' (Allgemein) and copy the 'Project ID' (Projekt-ID) and 'Web API Key' (Web-API-Schlüssel)
-6. Create a file 'application-dev.properties' in the root of your project and replace data as follows:
+6. Create a file 'application-dev.properties' in the following directory of your project `src/main/resources` and replace data as follows:
 ```
 firebase.project.id              =Replace with your 'Project ID'
 google_maps_api_key              =Replace with your 'Web API Key'
@@ -29,3 +31,19 @@ java -jar -Dspring.profiles.active=dev,localdb,google_maps_api build/libs/servic
 ```
 9. Test if everything is up and running by opening this URL [http://localhost:8080/v2/api-docs](http://localhost:8080/v2/api-docs) in a browser
 10. A connection to the database could be established via host `localhost`, port `5432` and the database name `colivery`
+
+## Enable Firebase Authentication
+
+
+`Get started` (Los gehts)
+`Sign-in methods` ()
+`Sign-in providers` (Anbieter für Anmeldungen)
+`Email/Password` (E-Mail-Adresse/Passwort)
+`Enable` (Aktivieren)
+`Save` (Speichern)
+`Users` (Benutzer)
+`Add user` (Nutzer hinzufügen)
+
+`Email / Password` (E-Mail / Passwort)
+
+`User UID` (Nutzer-UID)
