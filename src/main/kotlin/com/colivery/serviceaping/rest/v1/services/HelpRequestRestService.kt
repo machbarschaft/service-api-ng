@@ -101,6 +101,8 @@ class HelpRequestRestService(
         }
         helpRequestEntity.helpSeeker = this.helpSeekerRepository.save(helpSeeker)
         helpRequestEntity.requestStatus = updateHelpRequestDto.requestStatus
+        // setting current date for updatedAt
+        helpRequestEntity.updatedAt = LocalDateTime.now()
 
         // get helper
         if (updateHelpRequestDto.helper == null) {
