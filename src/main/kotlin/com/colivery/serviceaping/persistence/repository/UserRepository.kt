@@ -10,5 +10,6 @@ interface UserRepository : CrudRepository<UserEntity, UUID> {
     fun existsByFirebaseUid(firebaseUid: String): Boolean
     fun findByPhone(phoneNumber: String): UserEntity?
     fun findByEmail(email: String): UserEntity?
+    fun findAllByRoleEquals(role: UserEntity.Role): List<UserEntity>
 
 }
