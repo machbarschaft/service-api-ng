@@ -8,7 +8,6 @@ import com.colivery.serviceaping.rest.v1.resources.UserResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
@@ -22,30 +21,39 @@ import javax.validation.Valid
 class AdminRestService(private val userRepository: UserRepository) {
 
     @PutMapping("/users/setadmin/{email}")
-    fun updateUserToAdmin(@PathVariable email: String): Mono<ResponseEntity<String>> {
+    fun updateUserToAdmin(
+        @PathVariable email: String,
+        @RequestBody @Valid userPatch: PatchUserAdminDto
+    ): Mono<ResponseEntity<String>> {
         val user = userRepository.findByEmail(email)
-                ?: return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body("user $email does not exist"))
+            ?: return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body("user $email does not exist"))
 
-        user.role = UserEntity.Role.ADMIN
+        user.role = UserEntity.Role.valueOf(userPatch.role!!)
         userRepository.save(user)
 
         return Mono.just(ResponseEntity.status(HttpStatus.OK).build())
     }
 
-    @PatchMapping("/users/{userId}")
-    fun updateUserAdmin(@PathVariable userId: String, @RequestBody @Valid userPatch: PatchUserAdminDto,
-                        response: ServerHttpResponse)
-            : Mono<UserResource> {
+//    @PatchMapping("/users/{userId}")
+//    fun updateUserAdmin(@PathVariable userId: String, @RequestBody @Valid userPatch: PatchUserAdminDto,
+//                        response: ServerHttpResponse)
+//            : Mono<UserResource> {
+//
+//        var user = userRepository.findByFirebaseUid(userId)
+//        if (user == null) {
+//            response.statusCode = HttpStatus.NOT_FOUND
+//            return Mono.empty()
+//        }
+//
+//        user.role = UserEntity.Role.valueOf(userPatch.role!!)
+//        user = userRepository.save(user)
+//
+//        return Mono.just(toUserResource(user))
+//    }
 
-        var user = userRepository.findByFirebaseUid(userId)
-        if (user == null) {
-            response.statusCode = HttpStatus.NOT_FOUND
-            return Mono.empty()
-        }
-
-        user.role = UserEntity.Role.valueOf(userPatch.role!!)
-        user = userRepository.save(user)
-
-        return Mono.just(toUserResource(user))
+    @GetMapping()
+    fun getAdminUsers(): Mono<List<UserResource>> {
+        val adminUsers = userRepository.findAllByRoleEquals(UserEntity.Role.ADMIN)
+        return Mono.just(adminUsers.map { user -> toUserResource(user) })
     }
 }
