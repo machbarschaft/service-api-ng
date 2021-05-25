@@ -78,6 +78,7 @@ class UserRestService(
 
         return ResponseEntity.ok(Mono.fromCallable {
             val user = authentication.getUser()
+            user.email = updateUserDto.email
             user.firstName = updateUserDto.firstName
             user.lastName = updateUserDto.lastName
             user.street = updateUserDto.street
