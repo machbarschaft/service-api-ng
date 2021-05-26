@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+<changeSet author="ahodes" id="update_help_request_type" context="baseline">
+    <sql dbms="postgresql">
+        ALTER TABLE help_request ALTER COLUMN status TYPE VARCHAR(255);
+        ALTER TABLE help_request ALTER COLUMN status DROP DEFAULT;
+        DROP TYPE IF EXISTS request_status;
+        CREATE TYPE request_status AS ENUM ('OPEN', 'WIP', 'CLOSED', 'DELETED');
+        ALTER TABLE help_request ALTER COLUMN status TYPE request_status USING (status::request_status);
+        ALTER TABLE help_request ALTER COLUMN status SET DEFAULT 'OPEN';
+    </sql>
+</changeSet>
+</databaseChangeLog>
