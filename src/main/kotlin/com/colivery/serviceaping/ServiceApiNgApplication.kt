@@ -1,8 +1,10 @@
 package com.colivery.serviceaping
 
+import com.colivery.serviceaping.configuration.MailjetConfig
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.PrecisionModel
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @EnableJpaAuditing
 @EnableTransactionManagement
 @Configuration
+@EnableConfigurationProperties(MailjetConfig::class)
 class ServiceApiNgApplication {
     @Bean
     fun geometryFactory() =

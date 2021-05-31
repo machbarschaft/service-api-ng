@@ -44,6 +44,7 @@ dependencies {
     implementation("io.springfox:springfox-swagger2:3.0.0-SNAPSHOT")
     implementation("io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT")
     implementation("io.springfox:springfox-spring-webflux:3.0.0-SNAPSHOT")
+    implementation("com.mailjet:mailjet-client:4.2.0")
     runtimeOnly("org.postgresql:postgresql:42.2.12")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
