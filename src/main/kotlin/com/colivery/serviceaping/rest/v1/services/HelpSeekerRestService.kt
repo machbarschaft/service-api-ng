@@ -49,7 +49,6 @@ class HelpSeekerRestService(
     fun updateHelpSeeker(
         @PathVariable helpSeekerId: UUID,
         @RequestBody helpSeekerData: CreateHelpSeekerDto
-        CreateHelpSeekerDto
     ): Mono<HelpSeekerResource> {
         val errors: Errors = BeanPropertyBindingResult(helpSeekerData, "help_seeker")
 
