@@ -44,7 +44,7 @@ class HelpSeekerRestService(
         return Mono.just(resource)
     }
 
-    @PutMapping
+    @PutMapping("/{helpSeekerId}")
     @PreAuthorize("hasRole('ROLE_HOTLINE')")
     fun updateHelpSeeker(
         @PathVariable helpSeekerId: UUID,
