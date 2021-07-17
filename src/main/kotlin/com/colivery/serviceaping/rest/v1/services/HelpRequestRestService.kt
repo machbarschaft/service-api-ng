@@ -77,8 +77,8 @@ class HelpRequestRestService(
 
     @GetMapping
     fun getHelpRequestList(): Flux<HelpRequestResource> {
-        return Flux.fromIterable(this.helpRequestRepository.findAll())
-                .map { helpRequestEntity -> toHelpRequestResource(helpRequestEntity) }
+        return Flux.fromIterable(this.helpRequestRepository.findAllWithoutDeleted())
+            .map { helpRequestEntity -> toHelpRequestResource(helpRequestEntity) }
     }
 
     @PutMapping("{uuid}")
