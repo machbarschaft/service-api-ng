@@ -41,9 +41,9 @@ dependencies {
     implementation("org.liquibase:liquibase-core:3.6.3")
     implementation("com.vladmihalcea:hibernate-types-52:2.9.8")
     implementation("com.neovisionaries:nv-i18n:1.27")
-    implementation("io.springfox:springfox-swagger2:3.0.0-SNAPSHOT")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT")
-    implementation("io.springfox:springfox-spring-webflux:3.0.0-SNAPSHOT")
+    implementation("io.springfox:springfox-swagger2:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("io.springfox:springfox-spring-webflux:3.0.0")
     runtimeOnly("org.postgresql:postgresql:42.2.12")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
