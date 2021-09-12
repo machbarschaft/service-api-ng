@@ -7,8 +7,8 @@ import com.colivery.serviceaping.persistence.repository.HelpRequestRepository
 import com.colivery.serviceaping.persistence.repository.HelpSeekerRepository
 import com.colivery.serviceaping.persistence.repository.UserRepository
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.CreateHelpRequestDto
+import com.colivery.serviceaping.rest.v1.dto.`help-request`.HelpRequestStatusDto
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.UpdateHelpRequestContentDto
-import com.colivery.serviceaping.rest.v1.dto.`help-request`.UpdateHelpRequestStatusDto
 import com.colivery.serviceaping.rest.v1.exception.BadRequestException
 import com.colivery.serviceaping.rest.v1.resources.HelpRequestResource
 import org.springframework.http.HttpStatus
@@ -81,6 +81,17 @@ class HelpRequestRestService(
             .map { helpRequestEntity -> toHelpRequestResource(helpRequestEntity) }
     }
 
+    @GetMapping("accepted/")
+    fun getAcceptedHelpRequestByRequestStatusForUser(
+        @RequestBody requestStatus: HelpRequestStatusDto,
+        authentication: Authentication
+    )
+            : Flux<HelpRequestResource> {
+        val user = authentication.getUser()
+        return Flux.fromIterable(this.helpRequestRepository.findAllByHelperAndRequestStatus(user, requestStatus.status))
+            .map { helpRequestEntity -> toHelpRequestResource(helpRequestEntity) }
+    }
+
     @PutMapping("{uuid}")
     fun updateHelpRequest(@RequestBody updateHelpRequestDto: UpdateHelpRequestContentDto,
                           @PathVariable("uuid") helpRequestId: UUID): Mono<ResponseEntity<HelpRequestResource>> {
@@ -119,8 +130,10 @@ class HelpRequestRestService(
     }
 
     @PutMapping("{uuid}/status")
-    fun updateHelpRequestStatus(@RequestBody updateHelpRequestStatusDto: UpdateHelpRequestStatusDto,
-                                @PathVariable("uuid") helpRequestId: UUID): Mono<ResponseEntity<HelpRequestResource>> {
+    fun updateHelpRequestStatus(
+        @RequestBody updateHelpRequestStatusDto: HelpRequestStatusDto,
+        @PathVariable("uuid") helpRequestId: UUID
+    ): Mono<ResponseEntity<HelpRequestResource>> {
         val helpRequest = this.helpRequestRepository.findById(helpRequestId)
 
         if (helpRequest.isEmpty) {
