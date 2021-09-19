@@ -1,5 +1,6 @@
 package com.colivery.serviceaping.persistence.repository
 
+import com.colivery.serviceaping.persistence.RequestStatus
 import com.colivery.serviceaping.persistence.entity.HelpRequestEntity
 import com.colivery.serviceaping.persistence.entity.UserEntity
 import org.springframework.data.jpa.repository.Query
@@ -18,5 +19,6 @@ interface HelpRequestRepository : CrudRepository<HelpRequestEntity, UUID> {
                 "and updatedAt < :date"
     )
     fun findAllByUpdatedAtBeforeAndInactive(date: LocalDateTime): Set<HelpRequestEntity>
+    fun findAllByHelperAndRequestStatus(helper: UserEntity, requestStatus: RequestStatus): Set<HelpRequestEntity>
 
 }
