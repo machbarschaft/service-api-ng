@@ -11,6 +11,7 @@ import com.colivery.serviceaping.rest.v1.dto.`help-request`.HelpRequestStatusDto
 import com.colivery.serviceaping.rest.v1.dto.`help-request`.UpdateHelpRequestContentDto
 import com.colivery.serviceaping.rest.v1.exception.BadRequestException
 import com.colivery.serviceaping.rest.v1.resources.HelpRequestResource
+import org.locationtech.jts.geom.GeometryFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -28,9 +29,10 @@ import java.util.*
 @Validated
 @RequestMapping("/v1/help-request", produces = [MediaType.APPLICATION_JSON_VALUE])
 class HelpRequestRestService(
-        private val helpRequestRepository: HelpRequestRepository,
-        private val helpSeekerRepository: HelpSeekerRepository,
-        private val userRepository: UserRepository
+    private val helpRequestRepository: HelpRequestRepository,
+    private val helpSeekerRepository: HelpSeekerRepository,
+    private val userRepository: UserRepository,
+    private val geometryFactory: GeometryFactory
 ) {
     @PostMapping
     fun createHelpRequest(@RequestBody helpRequest: CreateHelpRequestDto, authentication: Authentication):
@@ -54,7 +56,8 @@ class HelpRequestRestService(
         }
 
         val adminUser = authentication.getUser()
-        val entity = toHelpRequestEntity(helpRequest, adminUser, helpSeeker.get())
+        val entity = toHelpRequestEntity(helpRequest, adminUser, helpSeeker.get(),
+            this.geometryFactory)
         val helpRequestEntity = this.helpRequestRepository.save(entity)
         val resource = toHelpRequestResource(helpRequestEntity)
 

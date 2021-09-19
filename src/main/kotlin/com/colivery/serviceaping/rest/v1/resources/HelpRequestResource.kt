@@ -12,5 +12,6 @@ class HelpRequestResource (
     val requestText: String,
     val adminUser: UserResource,
     val helpSeeker: HelpSeekerResource,
-    val helper: UserResource?
+    val helper: UserResource?,
+    val location: GeoPointResource?
 )
