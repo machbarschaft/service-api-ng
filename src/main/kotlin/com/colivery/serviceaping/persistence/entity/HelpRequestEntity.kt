@@ -2,6 +2,7 @@ package com.colivery.serviceaping.persistence.entity
 
 import com.colivery.serviceaping.persistence.RequestStatus
 import org.hibernate.annotations.Type
+import org.locationtech.jts.geom.Point
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -31,7 +32,10 @@ data class HelpRequestEntity(
 
         @ManyToOne(optional = true, fetch = FetchType.EAGER)
         @JoinColumn(name = "helper_id")
-        var helper: UserEntity? = null
+        var helper: UserEntity? = null,
+
+        @Column(nullable = true)
+        var location: Point? = null
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
