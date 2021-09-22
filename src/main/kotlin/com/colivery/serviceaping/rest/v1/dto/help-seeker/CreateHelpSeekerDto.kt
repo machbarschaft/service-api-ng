@@ -11,6 +11,14 @@ class CreateHelpSeekerDto(
 
         val phone: String,
 
+        val street: String,
+
+        val streetNo: String,
+
+        val zipCode: String,
+
+        val city: String,
+
         @field:NotNull
         val source: Source
 
