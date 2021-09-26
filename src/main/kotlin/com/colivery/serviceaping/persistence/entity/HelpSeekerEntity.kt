@@ -17,6 +17,14 @@ data class HelpSeekerEntity(
 
         var phone: String? = null,
 
+        var street: String? = null,
+
+        var streetNumber: String? = null,
+
+        var postCode: String? = null,
+
+        var city: String? = null,
+
         @Column(nullable = false, name = "source_platform")
         @Type(type = "com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType")
         @Enumerated(EnumType.STRING)
