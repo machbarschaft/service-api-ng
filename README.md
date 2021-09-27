@@ -19,6 +19,7 @@ google_maps_api_key              =Replace with your 'Web API Key'
 firebase.credentials.path        =./adminsdk.json
 colivery.security.allowedOrigins =http://localhost:4200
 liquibase.contexts               =baseline non-prd sta
+machbarschaft.cronjobSecret  = topsecret
 # logging.level.root              =DEBUG
 ```
 7. Start the database, which is a dockerized version of PostgreSQL by running `docker-compose up -d` - assuming that you have Docker and Docker Compose installed.
