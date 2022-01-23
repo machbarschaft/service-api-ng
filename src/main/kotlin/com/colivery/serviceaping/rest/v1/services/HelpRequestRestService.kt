@@ -4,6 +4,7 @@ import com.colivery.serviceaping.extensions.getUser
 import com.colivery.serviceaping.extensions.toGeoPoint
 import com.colivery.serviceaping.mapping.toHelpRequestEntity
 import com.colivery.serviceaping.mapping.toHelpRequestResource
+import com.colivery.serviceaping.persistence.Source
 import com.colivery.serviceaping.persistence.repository.HelpRequestRepository
 import com.colivery.serviceaping.persistence.repository.HelpSeekerRepository
 import com.colivery.serviceaping.persistence.repository.UserRepository
@@ -175,13 +176,26 @@ class HelpRequestRestService(
         val helpRequestEntity = helpRequest.get()
         if (helpRequestEntity.helpSeeker.id != null) { // update help seeker location in case it was found
             val helpSeeker = helpSeekerRepository.findById(helpRequestEntity.helpSeeker.id!!).get()
-            helpSeeker.postCode = updateHelpRequestStatusDto.postCode
-            helpSeeker.city = updateHelpRequestStatusDto.city
-            helpSeeker.street = updateHelpRequestStatusDto.street
-            helpSeeker.streetNumber = updateHelpRequestStatusDto.streetNumber
-            helpSeeker.phone = updateHelpRequestStatusDto.phone
+            if (helpSeeker.source == Source.HOTLINE) {
+                val enteredBy = userRepository.findById(helpSeeker.enteredBy.id!!).get()
+                enteredBy.zipCode = updateHelpRequestStatusDto.postCode
+                enteredBy.city = updateHelpRequestStatusDto.city
+                enteredBy.street = updateHelpRequestStatusDto.street
+                enteredBy.streetNo = updateHelpRequestStatusDto.streetNumber
+                if (updateHelpRequestStatusDto.location != null) {
+                    enteredBy.location = updateHelpRequestStatusDto.location!!.toGeoPoint(geometryFactory)
+                }
+                userRepository.save(enteredBy)
+            } else {
+                helpSeeker.postCode = updateHelpRequestStatusDto.postCode
+                helpSeeker.city = updateHelpRequestStatusDto.city
+                helpSeeker.street = updateHelpRequestStatusDto.street
+                helpSeeker.streetNumber = updateHelpRequestStatusDto.streetNumber
+            }
             helpSeeker.fullName = updateHelpRequestStatusDto.firstName + " " + updateHelpRequestStatusDto.lastName
+            helpSeeker.phone = updateHelpRequestStatusDto.phone
             this.helpSeekerRepository.save(helpSeeker)
+
         }
         helpRequestEntity.requestStatus = updateHelpRequestStatusDto.status
         if (updateHelpRequestStatusDto.location != null) {
