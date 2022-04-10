@@ -67,7 +67,7 @@ jobs:
           arguments: clean assemble
 
       - name: Prepare Cloud Build
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0
         with:
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
 
