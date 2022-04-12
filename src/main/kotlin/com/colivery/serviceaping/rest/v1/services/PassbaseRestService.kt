@@ -28,7 +28,11 @@ class PassbaseRestService
             if (responseBody.status == "processing") {
                 return Mono.just(PassbaseStatus.PROCESSING)
             }
-            return Mono.just(PassbaseStatus.FINISHED)
+            return if(responseBody.score > 0.4){
+                Mono.just(PassbaseStatus.SUCCESS)
+            } else {
+                Mono.just(PassbaseStatus.FAILED)
+            }
         }
         return Mono.just(PassbaseStatus.PROCESSING)
     }
