@@ -12,21 +12,31 @@ import javax.validation.constraints.NotNull
 
 @RestController
 @Validated
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("/v1/invitation-code", produces = [MediaType.APPLICATION_JSON_VALUE])
 class InvitationCodeRestService(
     private val invitationCodeRepository: InvitationCodeRepository
 ) {
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun getInvitationCodes(): Mono<List<String?>> {
         return Mono.just(invitationCodeRepository.findAllByUsedFalse().map { item -> item.code }.toList())
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun createInvitationCode(@NotNull @NotEmpty @RequestParam code: String): Mono<String> {
         val invitationCode = InvitationCodeEntity(code)
         invitationCodeRepository.save(invitationCode)
         return Mono.just(invitationCode.code!!)
+    }
+
+    @GetMapping("/check")
+    fun checkIfCodeIsValid(@RequestParam code: String) : Mono<Boolean> {
+        if(code.isEmpty()){
+            return Mono.just(false)
+        }
+        val item = invitationCodeRepository.findByCodeAndUsedIsFalse(code)
+        return Mono.just(item.isPresent)
     }
 }

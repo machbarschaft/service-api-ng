@@ -8,4 +8,6 @@ interface InvitationCodeRepository : CrudRepository<InvitationCodeEntity, UUID> 
     fun findByCode(code: String): InvitationCodeEntity
 
     fun findAllByUsedFalse(): List<InvitationCodeEntity>
+
+    fun findByCodeAndUsedIsFalse(code: String) : Optional<InvitationCodeEntity>
 }
