@@ -25,5 +25,7 @@ data class CreateUserDto(
         @field:NotEmpty
         val phone: String,
         @field:NotNull
-        val source: Source
+        val source: Source,
+        val passbaseUid: String?,
+        val invitationCode: String?
 )
