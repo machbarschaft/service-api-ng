@@ -3,10 +3,10 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="1649526099049-41"
-               author="schneider (generated)">
+    <changeSet id="1651620580822-41"
+               author="schneider">
         <addColumn tableName="user">
             <column name="passbase_uid"
                     type="VARCHAR(255)"/>

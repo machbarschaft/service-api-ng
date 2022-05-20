@@ -35,6 +35,13 @@ jobs:
         with:
           arguments: clean assemble
 
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-without-markdown
+          path: ./*
+          retention-days: 5
+
 
   #release:
   #  name: Release
