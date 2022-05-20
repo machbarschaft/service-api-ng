@@ -159,9 +159,9 @@ class UserRestService(
 
             if (createUserDto.source == Source.APP) {
                 var checked = false
-                if (!createUserDto.passbaseUid.isNullOrEmpty()) {
+                if (!createUserDto.passbaseId.isNullOrEmpty()) {
                     val passbaseUser =
-                        PassbaseUtil.getPassbaseUserById(createUserDto.passbaseUid!!, passbaseAPIKey).toFuture().get()
+                        PassbaseUtil.getPassbaseUserById(createUserDto.passbaseId!!, passbaseAPIKey).toFuture().get()
                     if (passbaseUser.status == "processing" || passbaseUser.score < 0.4) {
                         return ResponseEntity.badRequest().build()
                     }
@@ -173,7 +173,7 @@ class UserRestService(
                         return ResponseEntity.badRequest().build()
                     }
                 }
-                if (createUserDto.invitationCode.isNullOrEmpty() && createUserDto.passbaseUid.isNullOrEmpty()) {
+                if (createUserDto.invitationCode.isNullOrEmpty() && createUserDto.passbaseId.isNullOrEmpty()) {
                     return ResponseEntity.badRequest().build()
                 }
             }
@@ -192,7 +192,7 @@ class UserRestService(
                     locationGeoHash = createUserDto.location?.let { encodeGeoHash(it) },
                     phone = createUserDto.phone,
                     source = createUserDto.source,
-                    passbaseUid = createUserDto.passbaseUid
+                    passbaseUid = createUserDto.passbaseId
                 )
             )
             if (!createUserDto.invitationCode.isNullOrEmpty()) {
