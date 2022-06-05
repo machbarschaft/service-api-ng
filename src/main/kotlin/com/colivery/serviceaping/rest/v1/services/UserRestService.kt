@@ -7,6 +7,7 @@ import com.colivery.serviceaping.mapping.toOrderResource
 import com.colivery.serviceaping.mapping.toUserResource
 import com.colivery.serviceaping.persistence.Source
 import com.colivery.serviceaping.persistence.entity.UserEntity
+import com.colivery.serviceaping.persistence.repository.InvitationCodeRepository
 import com.colivery.serviceaping.persistence.repository.OrderRepository
 import com.colivery.serviceaping.persistence.repository.UserRepository
 import com.colivery.serviceaping.rest.v1.dto.App
@@ -16,10 +17,12 @@ import com.colivery.serviceaping.rest.v1.dto.user.UpdateUserDto
 import com.colivery.serviceaping.rest.v1.resources.UserResource
 import com.colivery.serviceaping.rest.v1.responses.UserOrderAcceptedResponse
 import com.colivery.serviceaping.rest.v1.responses.UserOrderResponse
+import com.colivery.serviceaping.util.PassbaseUtil
 import com.colivery.serviceaping.util.extractBearerToken
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import org.locationtech.jts.geom.GeometryFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -33,17 +36,19 @@ import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import javax.transaction.Transactional
-import javax.validation.Valid
 
 @RestController
 @Transactional
 @RequestMapping("/v1/user", produces = [MediaType.APPLICATION_JSON_VALUE])
 class UserRestService(
-        private val orderRepository: OrderRepository,
-        private val userRepository: UserRepository,
-        private val firebaseAuth: FirebaseAuth,
-        private val geometryFactory: GeometryFactory,
-        private val smartValidator: SmartValidator
+    private val orderRepository: OrderRepository,
+    private val userRepository: UserRepository,
+    private val firebaseAuth: FirebaseAuth,
+    private val geometryFactory: GeometryFactory,
+    private val smartValidator: SmartValidator,
+    private val invitationCodeRepository: InvitationCodeRepository,
+    @Value("\${passbase_api_key}")
+    private val passbaseAPIKey: String
 ) {
 
     @GetMapping("/orders")
@@ -51,12 +56,12 @@ class UserRestService(
         val user = authentication.getUser()
 
         return Flux.fromIterable(this.orderRepository.findAllByUser(user)
-                .map { order ->
-                    UserOrderResponse(
-                            toOrderResource(order),
-                            order.driverUser?.let { toUserResource(it) }
-                    )
-                }
+            .map { order ->
+                UserOrderResponse(
+                    toOrderResource(order),
+                    order.driverUser?.let { toUserResource(it) }
+                )
+            }
         )
     }
 
@@ -66,13 +71,13 @@ class UserRestService(
 
         val errors: Errors = BeanPropertyBindingResult(updateUserDto, "updateUserDto")
 
-        if(updateUserDto.source == Source.APP) {
+        if (updateUserDto.source == Source.APP) {
             smartValidator.validate(updateUserDto, errors, App::class.java)
-        } else if(updateUserDto.source == Source.HOTLINE) {
+        } else if (updateUserDto.source == Source.HOTLINE) {
             smartValidator.validate(updateUserDto, errors, Hotline::class.java)
         }
 
-        if(errors.hasErrors()) {
+        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().build()
         }
 
@@ -98,12 +103,12 @@ class UserRestService(
         val user = authentication.getUser()
 
         return Flux.fromIterable(this.orderRepository.findAllByDriverUser(user)
-                .map { order ->
-                    UserOrderAcceptedResponse(
-                            toOrderResource(order),
-                            toUserResource(order.user)
-                    )
-                }
+            .map { order ->
+                UserOrderAcceptedResponse(
+                    toOrderResource(order),
+                    toUserResource(order.user)
+                )
+            }
         )
     }
 
@@ -118,28 +123,28 @@ class UserRestService(
     @GetMapping("/search")
     @PreAuthorize("hasRole('ROLE_HOTLINE')")
     fun searchUser(@RequestParam phoneNumber: String): Mono<UserResource> =
-            Mono.justOrEmpty(this.userRepository.findByPhone(phoneNumber)?.let {
-                toUserResource(it)
-            })
+        Mono.justOrEmpty(this.userRepository.findByPhone(phoneNumber)?.let {
+            toUserResource(it)
+        })
 
     @PostMapping
     fun createUser(@RequestBody createUserDto: CreateUserDto, @RequestHeader headers: HttpHeaders):
             ResponseEntity<Mono<UserResource>> {
         val unauthorized = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .build<Mono<UserResource>>()
+            .build<Mono<UserResource>>()
         // Get the bearer token
         val token = extractBearerToken(headers)
-                ?: return unauthorized
+            ?: return unauthorized
 
         val errors: Errors = BeanPropertyBindingResult(createUserDto, "createUserDto")
 
-        if(createUserDto.source == Source.APP) {
+        if (createUserDto.source == Source.APP) {
             smartValidator.validate(createUserDto, errors, App::class.java)
-        } else if(createUserDto.source == Source.HOTLINE) {
+        } else if (createUserDto.source == Source.HOTLINE) {
             smartValidator.validate(createUserDto, errors, Hotline::class.java)
         }
 
-        if(errors.hasErrors()) {
+        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().build()
         }
 
@@ -148,10 +153,33 @@ class UserRestService(
             // First, make sure that the user wasnt created before
             if (this.userRepository.existsByFirebaseUid(firebaseToken.uid)) {
                 return ResponseEntity.badRequest()
-                        .build()
+                    .build()
             }
 
-            val user = this.userRepository.save(UserEntity(
+
+            if (createUserDto.source == Source.APP) {
+                var checked = false
+                if (!createUserDto.passbaseId.isNullOrEmpty()) {
+                    val passbaseUser =
+                        PassbaseUtil.getPassbaseUserById(createUserDto.passbaseId!!, passbaseAPIKey).toFuture().get()
+                    if (passbaseUser.status == "processing" || passbaseUser.score < 0.4) {
+                        return ResponseEntity.badRequest().build()
+                    }
+                    checked = true
+                }
+                if (!createUserDto.invitationCode.isNullOrEmpty() && !checked) {
+                    val invitation = invitationCodeRepository.findByCode(createUserDto.invitationCode!!)
+                    if (invitation.used == true) {
+                        return ResponseEntity.badRequest().build()
+                    }
+                }
+                if (createUserDto.invitationCode.isNullOrEmpty() && createUserDto.passbaseId.isNullOrEmpty()) {
+                    return ResponseEntity.badRequest().build()
+                }
+            }
+
+            val user = this.userRepository.save(
+                UserEntity(
                     firstName = createUserDto.firstName,
                     lastName = createUserDto.lastName,
                     street = createUserDto.street,
@@ -163,9 +191,16 @@ class UserRestService(
                     location = createUserDto.location?.toGeoPoint(this.geometryFactory),
                     locationGeoHash = createUserDto.location?.let { encodeGeoHash(it) },
                     phone = createUserDto.phone,
-                    source = createUserDto.source
-            ))
-
+                    source = createUserDto.source,
+                    passbaseUid = createUserDto.passbaseId
+                )
+            )
+            if (!createUserDto.invitationCode.isNullOrEmpty()) {
+                val invitation = invitationCodeRepository.findByCode(createUserDto.invitationCode!!)
+                invitation.used = true
+                invitation.usedBy = user
+                this.invitationCodeRepository.save(invitation)
+            }
             return ResponseEntity.ok(Mono.just(toUserResource(user)))
         } catch (exception: FirebaseAuthException) {
             return unauthorized
@@ -174,6 +209,6 @@ class UserRestService(
 
     @GetMapping
     fun getUser(authentication: Authentication) =
-            Mono.just(toUserResource(authentication.getUser()))
+        Mono.just(toUserResource(authentication.getUser()))
 
 }

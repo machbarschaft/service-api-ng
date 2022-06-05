@@ -32,7 +32,7 @@ class SecurityConfiguration(
                     // Allow unauthorized access to createUser endpoint, since the user cant be
                     // validated against our own DB before creating. This endpoint performs own
                     // validation.
-                    .pathMatchers(HttpMethod.GET, "/v1/location").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/v1/location", "/v1/passbase/**", "/v1/invitation-code/check").permitAll()
                     .pathMatchers(HttpMethod.POST, "/v1/user").permitAll()
                     .pathMatchers(HttpMethod.GET, "/v2/api-docs",
                             "/swagger-resources/**",

@@ -35,6 +35,13 @@ jobs:
         with:
           arguments: clean assemble
 
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-without-markdown
+          path: ./*
+          retention-days: 5
+
 
   #release:
   #  name: Release
@@ -67,7 +74,7 @@ jobs:
           arguments: clean assemble
 
       - name: Prepare Cloud Build
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0
         with:
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
 

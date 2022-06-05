@@ -38,7 +38,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.google.firebase:firebase-admin:6.12.2")
-    implementation("org.liquibase:liquibase-core:4.7.1")
+    implementation("org.liquibase:liquibase-core:4.9.1")
     implementation("com.vladmihalcea:hibernate-types-52:2.9.8")
     implementation("com.neovisionaries:nv-i18n:1.27")
     implementation("io.springfox:springfox-swagger2:3.0.0")
